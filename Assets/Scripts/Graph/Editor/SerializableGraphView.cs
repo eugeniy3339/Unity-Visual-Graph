@@ -46,7 +46,10 @@ namespace GraphEditor
             _search = ScriptableObject.CreateInstance<BlockSearchWindowProvider>();
             _search.Init(CreateBlock);
             nodeCreationRequest = ctx =>
-                SearchWindow.Open(new SearchWindowContext(ctx.screenMousePosition), _search);
+            {
+                if (_asset != null)
+                    SearchWindow.Open(new SearchWindowContext(ctx.screenMousePosition), _search);
+            };
 
             graphViewChanged = OnGraphViewChanged;
         }
@@ -57,6 +60,10 @@ namespace GraphEditor
 
         public void Load(GraphAsset asset)
         {
+            if (_asset != null && _asset != asset)
+                Save();
+
+            this.Unbind();
             _asset = asset;
             _serializedAsset = asset != null ? new SerializedObject(asset) : null;
 
@@ -79,20 +86,28 @@ namespace GraphEditor
 
         public void Rebuild()
         {
-            if (_asset == null)
-                return;
-
             _suppressChange = true;
 
             graphViewChanged = null;
             DeleteElements(graphElements.ToList());
             graphViewChanged = OnGraphViewChanged;
+            _views.Clear();
+
+            if (_asset == null)
+            {
+                _suppressChange = false;
+                return;
+            }
 
             EnsureEntryBlock();
-            _serializedAsset.Update();
+            _serializedAsset?.Update();
 
-            _views.Clear();
-            SerializedProperty blocksProp = _serializedAsset.FindProperty("_blocks");
+            SerializedProperty blocksProp = _serializedAsset?.FindProperty("_blocks");
+            if (blocksProp == null)
+            {
+                _suppressChange = false;
+                return;
+            }
 
             for (int i = 0; i < _asset.Blocks.Count; i++)
             {
@@ -317,6 +332,9 @@ namespace GraphEditor
 
         private void CreateBlock(Type blockType, Vector2 screenPosition)
         {
+            if (_asset == null)
+                return;
+
             var block = (GraphBlock)Activator.CreateInstance(blockType);
             _ = block.Id;
             block.EditorPosition = ScreenToGraphPosition(screenPosition);

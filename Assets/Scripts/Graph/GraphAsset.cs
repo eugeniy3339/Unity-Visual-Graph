@@ -31,7 +31,7 @@ using UnityEngine;
 /// }
 /// </code>
 /// </summary>
-[CreateAssetMenu(fileName = "NewGraph", menuName = "Graphs/Graph Asset")]
+[CreateAssetMenu(fileName = "NewGraph", menuName = "Graph/Graph Asset")]
 public class GraphAsset : ScriptableObject
 {
     [SerializeReference] private List<GraphBlock> _blocks = new();
