@@ -1,19 +1,26 @@
 A simple visual programming graph for Unity that executes precoded blocks.
 
 ## How Execution Works
-Execution begins at the **Entry** block.  
-Every block contains a `Fire()` method which triggers `StartBlock()` on child blocks.  
+
+Execution begins at the **Entry** block.
+
+Every block contains a `Fire()` method which triggers `StartBlock()` on child blocks.
+
 By default, `StartBlock()` calls `Fire()` unless overridden.
 
 Blocks start in a queue like this:
+
 ![Blocks start in a queue like this](images/BlocksStartQueue.png)
 
 ## Creating Custom Blocks
+
 You can create new block scripts using two methods:
+
 * **Template:** Go to `Create > Graph > Graph Block Script`.
 * **Manual:** Inherit from `GraphBlock` and add the `[CreateAssetMenu]` attribute.
 
 ### Example Block Script
+
 ```csharp
 [CreateAssetMenu("Custom/NewBlock")]
 public class NewBlock : GraphBlock
@@ -22,22 +29,25 @@ public class NewBlock : GraphBlock
 ```
 
 ## Handling Inputs & Outputs
+
 Blocks can pass data between each other through ports.
 
 ### 1. Adding Inputs
+
 Define an array of `GraphPort` objects and override `ValueInputs`:
 
 ```csharp
-private GraphPort[] inputs = { new("Input", typeof(GameObject)) };
-public override IReadOnlyList<GraphPort> ValueInputs => inputs;
+private GraphPort[] valueInputs = { new("Input", typeof(GameObject)) };
+public override IReadOnlyList<GraphPort> ValueInputs => valueInputs;
 ```
 
 ### 2. Adding Outputs
+
 Override `ValueOutputs` using the same structure:
 
 ```csharp
-private GraphPort[] outputs = { new("Output", typeof(GameObject)) };
-public override IReadOnlyList<GraphPort> ValueOutputs => outputs;
+private GraphPort[] valueOtputs = { new("Output", typeof(GameObject)) };
+public override IReadOnlyList<GraphPort> ValueOutputs => valueOtputs;
 ```
 
 ### 3. Getting & Setting Port Values
@@ -51,4 +61,20 @@ SetOutput("portName", value);
 
 // Get value from an output port
 T outputValue = GetOutputValue<T>("portName");
+```
+
+### 4. Custom Output Executions
+
+You can manage output flow ports by overriding `OutputPorts`:
+
+```csharp
+private string[] outputs = new { "Out", "True", "False" }
+public override IReadOnlyList<string> OutputPorts => outputs;
+```
+
+To trigger execution on a specific output port other than the default (`"Out"`), pass the port name to the `Fire()` method:
+
+```csharp
+// Fires a specific output port instead of the default "Out"
+Fire("True");
 ```
