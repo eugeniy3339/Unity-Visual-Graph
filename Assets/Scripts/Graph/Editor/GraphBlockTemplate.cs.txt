@@ -1,0 +1,25 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+[Serializable]
+[BlockMenu("Custom/#SCRIPTNAME#")]
+public class #SCRIPTNAME# : GraphBlock
+{
+    public override string DisplayName => "#SCRIPTNAME#";
+
+
+
+    public override IReadOnlyList<GraphPort> ValueInputs => Inputs;
+    private static readonly GraphPort[] Inputs = { new("Target", typeof(GameObject)) };
+
+    public override IReadOnlyList<GraphPort> ValueOutputs => Outputs;
+    private static readonly GraphPort[] Outputs = { new("Instance", typeof(GameObject)) };
+
+    public override void StartBlock()
+    {
+        // Custom logic here
+
+        Fire(); // Continue execution to connected child blocks
+    }
+}
