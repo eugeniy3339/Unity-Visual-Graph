@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7d259dc46a6a2a4bb3091e9293c8101, type: 3}
+  m_Name: TestDialogueGraph
+  m_EditorClassIdentifier: Assembly-CSharp::GraphAsset
+  _blocks:
+  - rid: 2960971887702966382
+  - rid: 2960971887702966385
+  - rid: 2960971887702966389
+  - rid: 2960971887702966390
+  _entry:
+    rid: 2960971887702966382
+  references:
+    version: 2
+    RefIds:
+    - rid: 2960971887702966382
+      type: {class: EntryBlock, ns: , asm: Assembly-CSharp}
+      data:
+        _id: c5466c7e95ef4f12b2a4cdb267fc36f9
+        _editorPosition: {x: 120, y: 200}
+        _connections:
+        - fromPort: Out
+          target:
+            rid: 2960971887702966385
+        _valueConnections: []
+    - rid: 2960971887702966385
+      type: {class: StartDialogueBlock, ns: , asm: Assembly-CSharp}
+      data:
+        _id: 8b96eda28c4a48eebb5d41bf6e1449f9
+        _editorPosition: {x: 360, y: 169}
+        _connections:
+        - fromPort: Cool
+          target:
+            rid: 2960971887702966389
+        - fromPort: Bye
+          target:
+            rid: 2960971887702966390
+        _valueConnections: []
+        dialogue:
+          text: Hello, its test dialogue graph
+          options:
+          - text: Bye
+          - text: Cool
+    - rid: 2960971887702966389
+      type: {class: StartDialogueBlock, ns: , asm: Assembly-CSharp}
+      data:
+        _id: bd7f1237b04a49f0a824b139cae65e2a
+        _editorPosition: {x: 720, y: 320}
+        _connections:
+        - fromPort: Bye
+          target:
+            rid: 2960971887702966390
+        _valueConnections: []
+        dialogue:
+          text: Thats waht im talking about!
+          options:
+          - text: Bye
+    - rid: 2960971887702966390
+      type: {class: EndDialogueBlock, ns: , asm: Assembly-CSharp}
+      data:
+        _id: f8ea4c6e1dab429292876f4192cbf9ed
+        _editorPosition: {x: 1133, y: 164}
+        _connections: []
+        _valueConnections: []
