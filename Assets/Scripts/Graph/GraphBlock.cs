@@ -18,7 +18,7 @@ public abstract class GraphBlock
     [SerializeField, HideInInspector] private Vector2 _editorPosition;
 
     // Outgoing flow connections. Authored by the editor, do not edit by hand.
-    [SerializeField, HideInInspector] private List<GraphConnection> _connections = new();
+    [SerializeField, HideInInspector] public List<GraphConnection> connections = new();
 
     // Incoming value (variable) connections, keyed by this block's input port name.
     // Authored by the editor, do not edit by hand.
@@ -47,7 +47,7 @@ public abstract class GraphBlock
     }
 
     /// <summary>Outgoing connections keyed by source port name.</summary>
-    public List<GraphConnection> Connections => _connections;
+    public List<GraphConnection> Connections => connections;
 
     /// <summary>Incoming value connections keyed by this block's input port name.</summary>
     public List<GraphValueConnection> ValueConnections => _valueConnections;
@@ -83,9 +83,9 @@ public abstract class GraphBlock
     /// <summary>Continue execution along every connection leaving <paramref name="port"/>.</summary>
     protected void Fire(string port = "Out")
     {
-        for (int i = 0; i < _connections.Count; i++)
+        for (int i = 0; i < connections.Count; i++)
         {
-            GraphConnection connection = _connections[i];
+            GraphConnection connection = connections[i];
             if (connection != null && connection.fromPort == port)
                 connection.target?.StartBlock();
         }

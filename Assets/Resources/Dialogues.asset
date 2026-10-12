@@ -17,3 +17,8 @@ MonoBehaviour:
     classes:
     - dialogueText: Hello, test dialogue text
     - dialogueText: It works!!
+  - name: Dialogue2
+    classes:
+    - dialogueText: Test2
+    - dialogueText: Bebebe
+    - dialogueText: bubububu

@@ -27,7 +27,7 @@ MonoBehaviour:
       data:
         _id: c5466c7e95ef4f12b2a4cdb267fc36f9
         _editorPosition: {x: 120, y: 200}
-        _connections:
+        connections:
         - fromPort: Out
           target:
             rid: 2960971887702966385
@@ -36,8 +36,8 @@ MonoBehaviour:
       type: {class: StartDialogueBlock, ns: , asm: Assembly-CSharp}
       data:
         _id: 8b96eda28c4a48eebb5d41bf6e1449f9
-        _editorPosition: {x: 360, y: 169}
-        _connections:
+        _editorPosition: {x: 399, y: 168}
+        connections:
         - fromPort: Cool
           target:
             rid: 2960971887702966389
@@ -54,20 +54,20 @@ MonoBehaviour:
       type: {class: StartDialogueBlock, ns: , asm: Assembly-CSharp}
       data:
         _id: bd7f1237b04a49f0a824b139cae65e2a
-        _editorPosition: {x: 720, y: 320}
-        _connections:
-        - fromPort: Bye
+        _editorPosition: {x: 699, y: 445}
+        connections:
+        - fromPort: bzzz
           target:
             rid: 2960971887702966390
         _valueConnections: []
         dialogue:
           text: Thats waht im talking about!
           options:
-          - text: Bye
+          - text: bzzz
     - rid: 2960971887702966390
       type: {class: EndDialogueBlock, ns: , asm: Assembly-CSharp}
       data:
         _id: f8ea4c6e1dab429292876f4192cbf9ed
-        _editorPosition: {x: 1133, y: 164}
-        _connections: []
+        _editorPosition: {x: 992, y: 150}
+        connections: []
         _valueConnections: []

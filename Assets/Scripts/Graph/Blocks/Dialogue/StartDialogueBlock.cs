@@ -9,7 +9,7 @@ public class StartDialogueBlock : GraphBlock
 {
     public override string DisplayName => "Start Dialogue";
 
-    [SerializeField] private Dialogue dialogue;
+    [SerializeField] public Dialogue dialogue;
     private List<Dialogue.DialogueOption> subscribedOptions = new List<Dialogue.DialogueOption>();
 
     private List<string> ports => dialogue.options.ConvertAll(option => option.text);

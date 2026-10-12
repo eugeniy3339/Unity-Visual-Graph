@@ -15,7 +15,7 @@ namespace GraphEditor
     /// into the asset, and lets Unity's serialized-property drawers handle every field
     /// on each block.
     /// </summary>
-    internal sealed class SerializableGraphView : GraphView
+    public sealed class SerializableGraphView : GraphView
     {
         private readonly EditorWindow _window;
         private readonly BlockSearchWindowProvider _search;
@@ -44,7 +44,7 @@ namespace GraphEditor
             this.AddManipulator(new RectangleSelector());
 
             _search = ScriptableObject.CreateInstance<BlockSearchWindowProvider>();
-            _search.Init(CreateBlock);
+            _search.Init(createBlock);
             nodeCreationRequest = ctx =>
             {
                 if (_asset != null)
@@ -330,19 +330,30 @@ namespace GraphEditor
 
         // --- model mutation --------------------------------------------------------
 
-        private void CreateBlock(Type blockType, Vector2 screenPosition)
+        public void createBlock(Type blockType, Vector2 screenPosition)
+        {
+            CreateBlock(blockType, screenPosition);
+        }
+
+        public GraphBlock CreateBlock(Type blockType, Vector2 screenPosition)
+        {
+            return CreateBlockOnPos(blockType, ScreenToGraphPosition(screenPosition));
+        }
+
+        public GraphBlock CreateBlockOnPos(Type blockType, Vector2 graphPosition)
         {
             if (_asset == null)
-                return;
+                return null;
 
             var block = (GraphBlock)Activator.CreateInstance(blockType);
             _ = block.Id;
-            block.EditorPosition = ScreenToGraphPosition(screenPosition);
+            block.EditorPosition = graphPosition;
 
             Undo.RegisterCompleteObjectUndo(_asset, "Add Block");
             _asset.Blocks.Add(block);
             Save();
             Rebuild();
+            return block;
         }
 
         private void RemoveBlock(GraphBlock block)

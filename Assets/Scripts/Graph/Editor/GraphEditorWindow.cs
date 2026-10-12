@@ -1,8 +1,13 @@
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using GraphEditor.CustomTools;
+using System.Drawing.Printing;
 
 namespace GraphEditor
 {
@@ -15,7 +20,13 @@ namespace GraphEditor
     {
         [SerializeField] private GraphAsset _asset;
 
+        public static GraphEditorWindow Instance { get { return GetWindow<GraphEditorWindow>("Graph"); } }
+
+        public GraphAsset CurrentAsset => _asset;
+
         private SerializableGraphView _view;
+        public SerializableGraphView View => _view;
+
         private ObjectField _assetField;
 
         public static void Open(GraphAsset asset)
@@ -87,6 +98,9 @@ namespace GraphEditor
             toolbar.Add(new ToolbarButton(() => _view?.FrameAll()) { text = "Frame All" });
             toolbar.Add(new ToolbarButton(() => _view?.RefreshPortsNow()) { text = "Refresh Ports" });
             toolbar.Add(new ToolbarButton(() => _view?.Rebuild()) { text = "Reload" });
+            var customToolsMenu = new ToolbarMenu { text = "Custom Tools" };
+            PopulateCustomToolsMenu(customToolsMenu);
+            toolbar.Add(customToolsMenu);
             rootVisualElement.Add(toolbar);
 
             _view = new SerializableGraphView(this) { style = { flexGrow = 1 } };
@@ -96,6 +110,109 @@ namespace GraphEditor
             {
                 _view.Load(_asset);
                 _view.schedule.Execute(() => _view.FrameAll()).ExecuteLater(50);
+            }
+        }
+
+        private struct CustomToolEntry
+        {
+            public string Path;
+            public Type Type;
+        }
+
+        private static List<CustomToolEntry> _cachedTools;
+
+        private static List<CustomToolEntry> FindCustomTools()
+        {
+            if (_cachedTools != null)
+                return _cachedTools;
+
+            var results = new List<CustomToolEntry>();
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                string asmName = assembly.GetName().Name;
+                if (asmName.StartsWith("System") || asmName.StartsWith("mscorlib") || asmName.StartsWith("Unity.") || asmName.StartsWith("UnityEngine"))
+                    continue;
+
+                Type[] types;
+                try
+                {
+                    types = assembly.GetTypes();
+                }
+                catch (ReflectionTypeLoadException e)
+                {
+                    types = e.Types;
+                }
+                catch
+                {
+                    continue;
+                }
+
+                if (types == null) continue;
+
+                foreach (var type in types)
+                {
+                    if (type == null || type.IsAbstract) continue;
+
+                    var attr = type.GetCustomAttribute<CustomToolMenuAttribute>(false);
+                    if (attr != null && !string.IsNullOrEmpty(attr.Path))
+                    {
+                        results.Add(new CustomToolEntry
+                        {
+                            Path = attr.Path,
+                            Type = type
+                        });
+                    }
+                }
+            }
+
+            results.Sort((a, b) => string.Compare(a.Path, b.Path, StringComparison.OrdinalIgnoreCase));
+            _cachedTools = results;
+            return _cachedTools;
+        }
+
+        private void PopulateCustomToolsMenu(ToolbarMenu menu)
+        {
+            var tools = FindCustomTools();
+            if (tools.Count == 0)
+            {
+                menu.menu.AppendAction("No Tools Found", null, DropdownMenuAction.Status.Disabled);
+                return;
+            }
+
+            foreach (var tool in tools)
+            {
+                Type toolType = tool.Type;
+                menu.menu.AppendAction(tool.Path, _ => OpenCustomTool(toolType));
+            }
+        }
+
+        private void OpenCustomTool(Type toolType)
+        {
+            if (typeof(EditorWindow).IsAssignableFrom(toolType))
+            {
+                var window = GetWindow(toolType);
+                if (window is CustomToolWindow customToolWindow)
+                {
+                    customToolWindow.Open(this);
+                }
+                window.Show();
+                window.Focus();
+            }
+            else
+            {
+                var method = toolType.GetMethod("Execute", new[] { typeof(GraphEditorWindow) })
+                          ?? toolType.GetMethod("Open", new[] { typeof(GraphEditorWindow) })
+                          ?? toolType.GetMethod("Execute", Type.EmptyTypes)
+                          ?? toolType.GetMethod("Open", Type.EmptyTypes);
+
+                if (method != null)
+                {
+                    object instance = method.IsStatic ? null : Activator.CreateInstance(toolType);
+                    if (method.GetParameters().Length == 1)
+                        method.Invoke(instance, new object[] { this });
+                    else
+                        method.Invoke(instance, null);
+                }
             }
         }
 
