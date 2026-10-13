@@ -1,4 +1,3 @@
-using NUnit.Framework.Constraints;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -97,7 +96,7 @@ namespace Graph.Logic
         public class GraphOutputPort
         {
             public string name;
-            private List<GraphBlock> connectedBlocks;
+            private List<GraphBlock> connectedBlocks = new List<GraphBlock>();
             public IReadOnlyList<GraphBlock> ConnectedBlocks => connectedBlocks;
 
             public void ConnectBlock(GraphBlock graphBlock)
