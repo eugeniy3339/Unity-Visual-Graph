@@ -12,3 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0c6da5cce47e6f42a31af4f9651d5d6, type: 3}
   m_Name: GraphAsset
   m_EditorClassIdentifier: Logic::Graph.Logic.GraphAsset
+  blocks:
+  - rid: 2960971930922123327
+  - rid: 2960971930922123328
+  references:
+    version: 2
+    RefIds:
+    - rid: 2960971930922123327
+      type: {class: GraphBlock, ns: Graph.Logic, asm: Logic}
+      data: 
+    - rid: 2960971930922123328
+      type: {class: DebugLogBlock, ns: Graph.Logic, asm: Logic}
+      data:
+        debugText: Hello, Nigga

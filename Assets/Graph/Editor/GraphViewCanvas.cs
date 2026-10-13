@@ -22,11 +22,15 @@ namespace Graph.Editor
         // Maps runtime block instances to their node views.
         private readonly Dictionary<GraphBlock, GraphNodeView> _nodeMap = new();
 
+        // Shared SerializedObject — all node inline field panels read from this single instance.
+        private readonly SerializedObject _serializedAsset;
+
         // ── Constructor ──────────────────────────────────────────────────────────
         public GraphViewCanvas(GraphAsset asset, GraphEditorWindow window)
         {
             _asset = asset;
             _window = window;
+            _serializedAsset = new SerializedObject(asset);
 
             // Standard GraphView setup
             SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
@@ -92,7 +96,7 @@ namespace Graph.Editor
             foreach (var block in blocks)
             {
                 if (block == null) continue;
-                var nodeView = new GraphNodeView(block);
+                var nodeView = new GraphNodeView(block, _serializedAsset, _asset);
                 _nodeMap[block] = nodeView;
                 AddElement(nodeView);
             }
@@ -262,6 +266,8 @@ namespace Graph.Editor
         {
             _asset.RemoveBlock(nodeView.Block);
             _nodeMap.Remove(nodeView.Block);
+            // Keep SerializedObject in sync after structural change
+            _serializedAsset.Update();
         }
 
         // ── Context menu (right-click to add blocks) ─────────────────────────────
@@ -283,7 +289,10 @@ namespace Graph.Editor
                 if (block == null) return;
                 _asset.AddBlock(block);
 
-                var nodeView = new GraphNodeView(block);
+                // Sync the SerializedObject so the new array element is visible
+                _serializedAsset.Update();
+
+                var nodeView = new GraphNodeView(block, _serializedAsset, _asset);
                 _nodeMap[block] = nodeView;
                 AddElement(nodeView);
                 EditorUtility.SetDirty(_asset);

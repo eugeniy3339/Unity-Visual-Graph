@@ -5,6 +5,7 @@ using System.Numerics;
 
 namespace Graph.Logic
 {
+    [Serializable]
     public class GraphBlock
     {
         public Vector2 position = default;
