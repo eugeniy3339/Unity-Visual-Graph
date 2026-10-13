@@ -1,20 +1,26 @@
+using NUnit.Framework.Constraints;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Numerics;
 
 namespace Graph.Logic
 {
     public class GraphBlock
     {
-        protected virtual bool hasAnInputPort { get; set; } = true;
+        public Vector2 position = default;
 
-        protected List<GraphOutputPort> ports;
+        public virtual string DisplayName { get; set; } = "Graph Block";
+
+        public virtual bool hasAnInputPort { get; set; } = true;
+
+        protected List<GraphOutputPort> ports = new List<GraphOutputPort> { new GraphOutputPort { name = "Out" } };
         public virtual IReadOnlyList<GraphOutputPort> Ports => ports;
 
-        protected List<GraphValueOutputPort> valueOutputs;
+        protected List<GraphValueOutputPort> valueOutputs = new List<GraphValueOutputPort>();
         public virtual IReadOnlyList<GraphValueOutputPort> ValueOutputs => valueOutputs;
 
-        protected List<GraphValueInputPort> valueInputs;
+        protected List<GraphValueInputPort> valueInputs = new List<GraphValueInputPort>();
         public virtual IReadOnlyList<GraphValueInputPort> ValueInputs => valueInputs;
 
 
