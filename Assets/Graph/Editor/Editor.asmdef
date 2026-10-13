@@ -1,0 +1,16 @@
+{
+    "name": "Editor",
+    "rootNamespace": "Graph.Editor",
+    "references": [
+        "Logic"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
