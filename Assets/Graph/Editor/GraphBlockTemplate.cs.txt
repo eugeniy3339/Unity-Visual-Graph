@@ -1,0 +1,28 @@
+using System.Collections.Generic;
+
+namespace Graph.Logic
+{
+    [BlockMenu("Custom/#SCRIPTNAME#")]
+    public class #SCRIPTNAME# : GraphBlock
+    {
+        public override string DisplayName { get; set; } = "#SCRIPTNAME#";
+
+        public override bool hasAnInputPort { get; set; } = true;
+
+        protected GraphOutputPort[] ports = { new GraphOutputPort("Out") };
+        public override IReadOnlyList<GraphOutputPort> Ports => _ports;
+
+        protected GraphValueOutputPort[] valueOutputs = { };
+        public override IReadOnlyList<GraphValueOutputPort> ValueOutputs => _valueOutputs;
+
+        protected GraphValueInputPort[] valueInputs = { };
+        public override IReadOnlyList<GraphValueInputPort> ValueInputs => _valueInputs;
+
+        public override void StartBlock()
+        {
+            // Custom logic here
+
+            Fire(); // Continue execution to connected child blocks
+        }
+    }
+}

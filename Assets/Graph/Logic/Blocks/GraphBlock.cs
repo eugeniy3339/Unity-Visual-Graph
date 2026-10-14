@@ -13,14 +13,14 @@ namespace Graph.Logic
 
         public virtual bool hasAnInputPort { get; set; } = true;
 
-        [SerializeReference] protected List<GraphOutputPort> ports = new List<GraphOutputPort> { new GraphOutputPort { name = "Out" } };
-        public virtual IReadOnlyList<GraphOutputPort> Ports => ports;
+        protected GraphOutputPort[] _ports = { new GraphOutputPort("Out") }; 
+        public virtual IReadOnlyList<GraphOutputPort> Ports => _ports;
 
-        [SerializeReference] protected List<GraphValueOutputPort> valueOutputs = new List<GraphValueOutputPort>();
-        public virtual IReadOnlyList<GraphValueOutputPort> ValueOutputs => valueOutputs;
+        protected GraphValueOutputPort[] _valueOutputs = { };
+        public virtual IReadOnlyList<GraphValueOutputPort> ValueOutputs => _valueOutputs;
 
-        [SerializeReference] protected List<GraphValueInputPort> valueInputs = new List<GraphValueInputPort>();
-        public virtual IReadOnlyList<GraphValueInputPort> ValueInputs => valueInputs;
+        protected GraphValueInputPort[] _valueInputs = { };
+        public virtual IReadOnlyList<GraphValueInputPort> ValueInputs => _valueInputs;
          
 
 
@@ -118,14 +118,19 @@ namespace Graph.Logic
                     connectedBlock.StartBlock();
                 }
             }
+
+            public GraphOutputPort(string name)
+            {
+                this.name = name;
+            }
         }
 
         [Serializable]
         public class GraphValueInputPort
         {
-            public string name;
+            public string name = "Input";
             public Type type;
-            public Color outputColor = Color.blue;
+            public Color portColor = Color.blue;
             [SerializeReference] private GraphValueOutputPort _connectedPort;
             public GraphValueOutputPort connectedPort { get { return _connectedPort; } }
 
@@ -148,14 +153,26 @@ namespace Graph.Logic
             {
                 return _connectedPort.value;
             }
+
+            public GraphValueInputPort(string name, Type type)
+            {
+                this.name = name;
+                this.type = type;
+            }
+            public GraphValueInputPort(string name, Type type, Color color)
+            {
+                this.name = name;
+                this.type = type;
+                this.portColor = color;
+            }
         }
 
         [Serializable] 
         public class GraphValueOutputPort
         {
-            public string name;
+            public string name = "Output";
             public Type type;
-            public Color outputColor = Color.blue;
+            public Color portColor = Color.blue;
             public object value { get; private set; }
 
             public object GetValue()
@@ -168,6 +185,18 @@ namespace Graph.Logic
                 if (!type.IsAssignableFrom(value.GetType())) return false;
                 this.value = value;
                 return true;
+            }
+
+            public GraphValueOutputPort(string name, Type type)
+            {
+                this.name = name;
+                this.type = type;
+            }
+            public GraphValueOutputPort(string name, Type type, Color color)
+            {
+                this.name = name;
+                this.type = type;
+                this.portColor = color;
             }
         }
     }

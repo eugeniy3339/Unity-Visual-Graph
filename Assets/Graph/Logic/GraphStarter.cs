@@ -8,7 +8,7 @@ namespace Graph.Logic
 
         private void Start()
         {
-            graph.StartGraph();
+            graph?.StartGraph();
         }
     }
 }
