@@ -1,0 +1,17 @@
+{
+    "name": "GraphCustomToolsLogic",
+    "rootNamespace": "GraphCustomTools.Logic",
+    "references": [
+        "GUID:7d42d7232141c15419132f0744cf9b05",
+        "GUID:37cca0a8f5ee71246bc6a81ac87b7347"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

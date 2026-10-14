@@ -1,7 +1,9 @@
 {
-    "name": "Logic",
-    "rootNamespace": "Graph.Logic",
-    "references": [],
+    "name": "GraphCustomToolsEditor",
+    "rootNamespace": "GraphCustomTools.Editor",
+    "references": [
+        "GraphCustomToolsLogic"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

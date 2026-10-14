@@ -116,8 +116,7 @@ namespace Graph.Editor
         {
             if (_asset == null) return;
             _graphView?.CommitPositions();
-            EditorUtility.SetDirty(_asset);
-            AssetDatabase.SaveAssets();
+            _asset.SaveGraph();
         }
 
         private void PingAsset()
