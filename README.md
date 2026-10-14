@@ -17,12 +17,12 @@ Blocks start in a queue like this:
 You can create new block scripts using two methods:
 
 * **Template:** Go to `Create > Graph > Graph Block Script`.
-* **Manual:** Inherit from `GraphBlock` and add the `[CreateAssetMenu]` attribute.
+* **Manual:** Inherit from `GraphBlock` and add the `[BlockMenu]` attribute.
 
 ### Example Block Script
 
 ```csharp
-[CreateAssetMenu("Custom/NewBlock")]
+[BlockMenu("Custom/NewBlock")]
 public class NewBlock : GraphBlock
 {
 }
@@ -34,11 +34,11 @@ Blocks can pass data between each other through ports.
 
 ### 1. Adding Inputs
 
-Define an array of `GraphPort` objects and override `ValueInputs`:
+Define an array of `GraphValueInputPort` objects and override `ValueInputs`:
 
 ```csharp
-private GraphPort[] valueInputs = { new("Input", typeof(GameObject)) };
-public override IReadOnlyList<GraphPort> ValueInputs => valueInputs;
+protected GraphValueInputPort[] valueInputs = { new GraphValueInputPort("StringInput", typeof(string)) };
+public virtual IReadOnlyList<GraphValueInputPort> ValueInputs => valueInputs;
 ```
 
 ### 2. Adding Outputs
@@ -46,21 +46,24 @@ public override IReadOnlyList<GraphPort> ValueInputs => valueInputs;
 Override `ValueOutputs` using the same structure:
 
 ```csharp
-private GraphPort[] valueOtputs = { new("Output", typeof(GameObject)) };
-public override IReadOnlyList<GraphPort> ValueOutputs => valueOtputs;
+protected GraphValueOutputPort[] valueOutputs = { new GraphValueOutputPort("StringOutput", typeof(string)) };
+public virtual IReadOnlyList<GraphValueOutputPort> ValueOutputs => valueOutputs;
 ```
 
 ### 3. Getting & Setting Port Values
 
 ```csharp
 // Get value from an input port
-T value = GetInput<T>("portName");
+object value = GetInput("portName");
+object value = GetInput(port);
 
 // Set value on an output port
-SetOutput("portName", value);
+SetOutputValue("portName", value);
+SetOutputValue(port, value);
 
 // Get value from an output port
-T outputValue = GetOutputValue<T>("portName");
+object outputValue = GetOutputValue("portName");
+object outputValue = GetOutputValue(port);
 ```
 
 ### 4. Custom Output Executions
@@ -68,13 +71,14 @@ T outputValue = GetOutputValue<T>("portName");
 You can manage output flow ports by overriding `OutputPorts`:
 
 ```csharp
-private string[] outputs = new { "Out", "True", "False" }
-public override IReadOnlyList<string> OutputPorts => outputs;
+protected GraphOutputPort[] ports = { new GraphOutputPort("Out"), new GraphOutputPort("False"), new GraphOutputPort("True") }; 
+public virtual IReadOnlyList<GraphOutputPort> Ports => ports;
 ```
 
-To trigger execution on a specific output port other than the default (`"Out"`), pass the port name to the `Fire()` method:
+To trigger execution on a specific output port other than the default (0), pass the port index, or the port it self to the `Fire()` method:
 
 ```csharp
-// Fires a specific output port instead of the default "Out"
-Fire("True");
+// Fires a specific output port instead of the default 0
+Fire(1);
+Fire(port);
 ```
