@@ -9,7 +9,7 @@ namespace Graph.Logic
         [SerializeReference]
         public List<GraphBlock> blocks = new List<GraphBlock>
         {
-            new GraphBlock { DisplayName = "Entry", hasAnInputPort = false, position = new System.Numerics.Vector2(200f, 200f) }
+            new GraphBlock { DisplayName = "Entry", hasAnInputPort = false, position = new Vector2(200f, 200f) }
         };
 
         // ── Editor helpers ───────────────────────────────────────────────────────
@@ -38,5 +38,5 @@ namespace Graph.Logic
         {
             return blocks.Count > 0;
         }
-    }
+    } 
 }

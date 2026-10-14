@@ -41,7 +41,7 @@ namespace Graph.Editor
         {
             Block = block;
             title = block.DisplayName;
-            SetPosition(new Rect(new Vector2(block.position.X, block.position.Y), Vector2.zero));
+            SetPosition(new Rect(new Vector2(block.position.x, block.position.y), Vector2.zero)); 
 
             BuildPorts();
             BuildSerializedFields(serializedObject, asset);
@@ -233,11 +233,11 @@ namespace Graph.Editor
         public void CommitPosition()
         {
             var pos = GetPosition().position;
-            Block.position = new System.Numerics.Vector2(pos.x, pos.y);
+            Block.position = new Vector2(pos.x, pos.y);
         }
 
         // ── Helpers ──────────────────────────────────────────────────────────────
-        private static Color ColorFromSystemColor(System.Drawing.Color c) =>
-            new Color(c.R / 255f, c.G / 255f, c.B / 255f, c.A / 255f);
+        private static Color ColorFromSystemColor(Color c) =>
+            new Color(c.r / 255f, c.g / 255f, c.b / 255f, c.a / 255f);
     }
 }

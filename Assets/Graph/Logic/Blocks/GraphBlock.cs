@@ -1,28 +1,27 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Numerics;
+using UnityEngine;
 
 namespace Graph.Logic
 {
     [Serializable]
     public class GraphBlock
     {
-        public Vector2 position = default;
+        [SerializeReference] public Vector2 position = default;
 
         public virtual string DisplayName { get; set; } = "Graph Block";
 
         public virtual bool hasAnInputPort { get; set; } = true;
 
-        protected List<GraphOutputPort> ports = new List<GraphOutputPort> { new GraphOutputPort { name = "Out" } };
+        [SerializeReference] protected List<GraphOutputPort> ports = new List<GraphOutputPort> { new GraphOutputPort { name = "Out" } };
         public virtual IReadOnlyList<GraphOutputPort> Ports => ports;
 
-        protected List<GraphValueOutputPort> valueOutputs = new List<GraphValueOutputPort>();
+        [SerializeReference] protected List<GraphValueOutputPort> valueOutputs = new List<GraphValueOutputPort>();
         public virtual IReadOnlyList<GraphValueOutputPort> ValueOutputs => valueOutputs;
 
-        protected List<GraphValueInputPort> valueInputs = new List<GraphValueInputPort>();
+        [SerializeReference] protected List<GraphValueInputPort> valueInputs = new List<GraphValueInputPort>();
         public virtual IReadOnlyList<GraphValueInputPort> ValueInputs => valueInputs;
-
+         
 
 
         public virtual void StartBlock() => Fire();
@@ -94,10 +93,11 @@ namespace Graph.Logic
 
 
 
+        [Serializable]
         public class GraphOutputPort
         {
             public string name;
-            private List<GraphBlock> connectedBlocks = new List<GraphBlock>();
+            [SerializeReference] private List<GraphBlock> connectedBlocks = new List<GraphBlock>(); 
             public IReadOnlyList<GraphBlock> ConnectedBlocks => connectedBlocks;
 
             public void ConnectBlock(GraphBlock graphBlock)
@@ -120,39 +120,42 @@ namespace Graph.Logic
             }
         }
 
+        [Serializable]
         public class GraphValueInputPort
         {
             public string name;
             public Type type;
-            public Color outputColor = Color.Blue;
-            public GraphValueOutputPort connectedPort { get; private set; }
+            public Color outputColor = Color.blue;
+            [SerializeReference] private GraphValueOutputPort _connectedPort;
+            public GraphValueOutputPort connectedPort { get { return _connectedPort; } }
 
             public bool ConnectOutput(GraphValueOutputPort outputToConnect)
             {
                 if (outputToConnect == null) return false;
                 if (!type.IsAssignableFrom(outputToConnect.type)) return false;
-                if (connectedPort != null) return false;
-                connectedPort = outputToConnect;
+                if (_connectedPort != null) return false;
+                _connectedPort = outputToConnect;
 
                 return true;
             }
 
             public void DisconectCurOutput()
             {
-                connectedPort = null;
+                _connectedPort = null;
             }
 
             public object GetValue()
             {
-                return connectedPort.value;
+                return _connectedPort.value;
             }
         }
 
+        [Serializable] 
         public class GraphValueOutputPort
         {
             public string name;
             public Type type;
-            public Color outputColor = Color.Blue;
+            public Color outputColor = Color.blue;
             public object value { get; private set; }
 
             public object GetValue()

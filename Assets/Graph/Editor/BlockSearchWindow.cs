@@ -89,7 +89,7 @@ namespace Graph.Editor
                     var block = (GraphBlock)Activator.CreateInstance(blockType);
 
                     // Position the block at the right-click location
-                    block.position = new System.Numerics.Vector2(
+                    block.position = new Vector2(
                         _spawnPosition.x, _spawnPosition.y);
 
                     _onBlockSelected?.Invoke(block);

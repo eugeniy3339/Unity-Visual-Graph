@@ -14,10 +14,36 @@ MonoBehaviour:
   m_EditorClassIdentifier: Logic::Graph.Logic.GraphAsset
   blocks:
   - rid: 1259770170660356161
+  - rid: 2960971953191518208
   references:
     version: 2
     RefIds:
     - rid: 1259770170660356161
       type: {class: DebugLogBlock, ns: Graph.Logic, asm: Logic}
       data:
+        position: {x: -10, y: -52}
+        ports:
+        - rid: 2960971953191518277
+        valueOutputs: []
+        valueInputs: []
         debugText: Hello World
+    - rid: 2960971953191518208
+      type: {class: DebugLogBlock, ns: Graph.Logic, asm: Logic}
+      data:
+        position: {x: 279, y: 37}
+        ports:
+        - rid: 2960971953191518278
+        valueOutputs: []
+        valueInputs: []
+        debugText: Bajksnbdkjahsd
+    - rid: 2960971953191518277
+      type: {class: GraphBlock/GraphOutputPort, ns: Graph.Logic, asm: Logic}
+      data:
+        name: Out
+        connectedBlocks:
+        - rid: 2960971953191518208
+    - rid: 2960971953191518278
+      type: {class: GraphBlock/GraphOutputPort, ns: Graph.Logic, asm: Logic}
+      data:
+        name: Out
+        connectedBlocks: []
