@@ -476,7 +476,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 314d173845a35ec448290e57aa271a8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Logic::Graph.Logic.GraphStarter
-  graph: {fileID: 11400000, guid: e23830cd21861c34d90ed6f54013f7f6, type: 2}
+  graph: {fileID: 11400000, guid: 16c0a0806b3d15a40b1e9ccdbc974c3e, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

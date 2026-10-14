@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace Graph.Logic
@@ -37,6 +38,14 @@ namespace Graph.Logic
         private bool CanStartGraph()
         {
             return blocks.Count > 0;
+        }
+
+
+
+        public void SaveGraph()
+        {
+            EditorUtility.SetDirty(this);
+            AssetDatabase.SaveAssets();
         }
     } 
 }

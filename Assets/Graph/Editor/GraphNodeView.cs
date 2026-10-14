@@ -67,7 +67,7 @@ namespace Graph.Editor
             foreach (var valIn in Block.ValueInputs)
             {
                 var type  = valIn.type ?? typeof(object);
-                var color = ColorFromSystemColor(valIn.outputColor);
+                var color = ColorFromSystemColor(valIn.portColor);
                 var port  = InstantiatePort(Orientation.Horizontal, Direction.Input,
                     Port.Capacity.Single, type);
                 port.portName  = valIn.name;
@@ -92,7 +92,7 @@ namespace Graph.Editor
             foreach (var valOut in Block.ValueOutputs)
             {
                 var type  = valOut.type ?? typeof(object);
-                var color = ColorFromSystemColor(valOut.outputColor);
+                var color = ColorFromSystemColor(valOut.portColor);
                 var port  = InstantiatePort(Orientation.Horizontal, Direction.Output,
                     Port.Capacity.Multi, type);
                 port.portName  = valOut.name;
