@@ -21,9 +21,9 @@ MonoBehaviour:
     - rid: 2960971956296351808
       type: {class: GraphBlock, ns: Graph.Logic, asm: GraphLogic}
       data:
-        position: {x: 205, y: 200}
+        position: {x: 0, y: 0}
     - rid: 2960971956296351809
       type: {class: DebugLogBlock, ns: Graph.Logic, asm: GraphLogic}
       data:
-        position: {x: 559, y: 225}
+        position: {x: 0, y: 0}
         debugText: Hello World
