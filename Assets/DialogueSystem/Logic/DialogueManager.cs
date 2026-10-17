@@ -40,6 +40,31 @@ namespace DialogueSystem.Logic
             {
                 onSelected?.Invoke(this);
             }
+
+
+
+            public DialogueOption()
+            {
+
+            }
+
+            public DialogueOption(string text)
+            {
+                this.text = text;
+            }
+        }
+
+
+        
+        public Dialogue()
+        {
+
+        }
+
+        public Dialogue(string text, List<DialogueOption> options)
+        {
+            this.text = text;
+            this.options = options;
         }
     }
 }

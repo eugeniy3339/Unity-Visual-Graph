@@ -23,16 +23,16 @@ MonoBehaviour:
     - rid: 2960971956296351808
       type: {class: GraphBlock, ns: Graph.Logic, asm: GraphLogic}
       data:
-        position: {x: 78, y: 422}
+        position: {x: 0, y: 0}
     - rid: 2960971956296351809
       type: {class: DebugLogBlock, ns: Graph.Logic, asm: GraphLogic}
       data:
-        position: {x: 466, y: 427}
+        position: {x: 0, y: 0}
         debugText: Hello World
     - rid: 2960972014945566834
       type: {class: StartDialogueBlock, ns: Graph.Logic, asm: GraphLogic}
       data:
-        position: {x: 785, y: 441}
+        position: {x: 0, y: 0}
         dialogue:
           text: Hello, its a test dialogue
           options:
@@ -40,4 +40,4 @@ MonoBehaviour:
     - rid: 2960972014945566835
       type: {class: EndDialogueBlock, ns: Graph.Logic, asm: GraphLogic}
       data:
-        position: {x: 1149, y: 471}
+        position: {x: 0, y: 0}

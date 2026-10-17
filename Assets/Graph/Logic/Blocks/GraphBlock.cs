@@ -21,8 +21,6 @@ namespace Graph.Logic
 
         protected GraphValueInputPort[] _valueInputs = { };
         public virtual IReadOnlyList<GraphValueInputPort> ValueInputs => _valueInputs;
-         
-
 
         public virtual void StartBlock() => Fire();
 
@@ -89,6 +87,50 @@ namespace Graph.Logic
         {
             if (port == null) return false;
             return port.SetValue(value);
+        }
+
+
+
+        public static GraphBlock CreateBlock(Type blockType)
+        {
+            if (!blockType.IsAssignableFrom(typeof(GraphBlock))) return null;
+
+            GraphBlock block = (GraphBlock)Activator.CreateInstance(blockType);
+            return block;
+        }
+
+        public static GraphBlock CreateBlock(Type blockType, Vector2 position)
+        {
+            GraphBlock graphBlock = CreateBlock(blockType);
+            if (graphBlock != null)
+            {
+                graphBlock.position = position;
+            }
+
+            return graphBlock;
+        }
+
+        public static GraphBlock CreateBlock(Type blockType, string displayName)
+        {
+            GraphBlock graphBlock = CreateBlock(blockType);
+            if (graphBlock != null)
+            {
+                graphBlock.DisplayName = displayName;
+            }
+
+            return graphBlock;
+        }
+
+        public static GraphBlock CreateBlock(Type blockType, Vector2 position, string displayName)
+        {
+            GraphBlock graphBlock = CreateBlock(blockType);
+            if(graphBlock != null)
+            {
+                graphBlock.position = position;
+                graphBlock.DisplayName = displayName;
+            }
+
+            return graphBlock;
         }
 
 

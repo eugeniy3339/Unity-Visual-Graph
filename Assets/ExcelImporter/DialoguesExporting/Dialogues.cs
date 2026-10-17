@@ -6,5 +6,5 @@ using UnityEngine;
 [ExcelAsset]
 public class Dialogues : ScriptableObject
 {
-	public List<ExcelTab<DialogueExcelExport>> tabs;
+	public List<ExcelTab<ExcelDialoguePart>> tabs;
 }

@@ -13,7 +13,7 @@ namespace Graph.Logic
         private List<DialogueOptionGraphPortPair> ports => dialogue.options.ConvertAll(option => new DialogueOptionGraphPortPair(option, new GraphOutputPort(option.text)));
         public override IReadOnlyList<GraphOutputPort> Ports => ports.ConvertAll(pair => pair.Port);
 
-        [SerializeField] private Dialogue dialogue;
+        public Dialogue dialogue;
 
         private List<Dialogue.DialogueOption> subscribedOptions = new List<Dialogue.DialogueOption>();
 

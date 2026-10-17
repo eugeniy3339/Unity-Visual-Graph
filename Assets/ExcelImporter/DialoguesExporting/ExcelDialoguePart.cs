@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 
 [Serializable]
-public class DialogueExcelExport
+public class ExcelDialoguePart
 {
     public string dialogueText;
 }
