@@ -15,15 +15,29 @@ MonoBehaviour:
   blocks:
   - rid: 2960971956296351808
   - rid: 2960971956296351809
+  - rid: 2960972014945566834
+  - rid: 2960972014945566835
   references:
     version: 2
     RefIds:
     - rid: 2960971956296351808
       type: {class: GraphBlock, ns: Graph.Logic, asm: GraphLogic}
       data:
-        position: {x: 674, y: -755}
+        position: {x: 78, y: 422}
     - rid: 2960971956296351809
       type: {class: DebugLogBlock, ns: Graph.Logic, asm: GraphLogic}
       data:
-        position: {x: 1059, y: -752}
+        position: {x: 466, y: 427}
         debugText: Hello World
+    - rid: 2960972014945566834
+      type: {class: StartDialogueBlock, ns: Graph.Logic, asm: GraphLogic}
+      data:
+        position: {x: 785, y: 441}
+        dialogue:
+          text: Hello, its a test dialogue
+          options:
+          - text: ...
+    - rid: 2960972014945566835
+      type: {class: EndDialogueBlock, ns: Graph.Logic, asm: GraphLogic}
+      data:
+        position: {x: 1149, y: 471}
