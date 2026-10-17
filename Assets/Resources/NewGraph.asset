@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7d259dc46a6a2a4bb3091e9293c8101, type: 3}
+  m_Name: NewGraph
+  m_EditorClassIdentifier: Assembly-CSharp::GraphAsset
+  _blocks:
+  - rid: 2960972018267979839
+  - rid: 2960972018267979840
+  _entry:
+    rid: 2960972018267979839
+  references:
+    version: 2
+    RefIds:
+    - rid: 2960972018267979839
+      type: {class: EntryBlock, ns: , asm: Assembly-CSharp}
+      data:
+        _id: 0723961c31be478494db38df8ae9e3c6
+        _editorPosition: {x: 120, y: 200}
+        _connections:
+        - fromPort: Out
+          target:
+            rid: 2960972018267979840
+        _valueConnections: []
+    - rid: 2960972018267979840
+      type: {class: DebugLogBlock, ns: , asm: Assembly-CSharp}
+      data:
+        _id: c33cd8a8a1b049168531c82c2dd4e8b1
+        _editorPosition: {x: 303, y: 176}
+        _connections: []
+        _valueConnections: []
+        _message: Hello from the graph
+        _logType: 3
