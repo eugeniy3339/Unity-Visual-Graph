@@ -1,10 +1,12 @@
 using DialogueSystem.Logic;
-using UnityEngine;
+using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 
 namespace Graph.Logic
 {
+    [Serializable]
     [BlockMenu("Dialogue/Start Dialogue")]
     public class StartDialogueBlock : GraphBlock
     {

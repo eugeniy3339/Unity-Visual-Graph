@@ -1,7 +1,9 @@
+using System;
 using UnityEngine;
 
 namespace Graph.Logic
 {
+    [Serializable]
     [BlockMenu("Debug/Log")]
     public class DebugLogBlock : GraphBlock
     {

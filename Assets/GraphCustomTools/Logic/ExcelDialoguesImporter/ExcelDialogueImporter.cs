@@ -21,8 +21,8 @@ namespace GraphCustomTools.Logic
 
         private static GraphBlock AddNextBlock(Type blockType, GraphAsset graphAsset)
         {
-            GraphBlock lastBlock = graphAsset.blocks.Count > 0 ? graphAsset.blocks[graphAsset.blocks.Count - 1] : null;
-            Vector2 blockPos = lastBlock != null ? new Vector2(lastBlock.position.x + 200f, lastBlock.position.y) : Vector2.zero;
+            GraphBlock lastBlock = graphAsset.Blocks.Count > 0 ? graphAsset.Blocks[graphAsset.Blocks.Count - 1] : null;
+            Vector2 blockPos = lastBlock != null ? new Vector2(lastBlock.Position.x + 200f, lastBlock.Position.y) : Vector2.zero;
 
             GraphBlock newBlock = GraphBlock.CreateBlock(blockType, blockPos);
             if (newBlock == null) return null;

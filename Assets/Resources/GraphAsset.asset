@@ -12,32 +12,81 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0c6da5cce47e6f42a31af4f9651d5d6, type: 3}
   m_Name: GraphAsset
   m_EditorClassIdentifier: GraphLogic::Graph.Logic.GraphAsset
-  blocks:
-  - rid: 2960971956296351808
-  - rid: 2960971956296351809
-  - rid: 2960972014945566834
-  - rid: 2960972014945566835
+  _blocks:
+  - rid: 2960972059384479825
+  - rid: 2960972059384479826
+  - rid: 2960972059384479844
   references:
     version: 2
     RefIds:
-    - rid: 2960971956296351808
+    - rid: 2960972059384479825
       type: {class: GraphBlock, ns: Graph.Logic, asm: GraphLogic}
       data:
-        position: {x: 0, y: 0}
-    - rid: 2960971956296351809
-      type: {class: DebugLogBlock, ns: Graph.Logic, asm: GraphLogic}
-      data:
-        position: {x: 0, y: 0}
-        debugText: Hello World
-    - rid: 2960972014945566834
+        _id: 02b687c1702b469a9e73e85091838a3a
+        _position: {x: 200, y: 200}
+        _displayName: Entry
+        _hasInputPort: 0
+        _ports:
+        - Name: Out
+          _connectedBlocks:
+          - _id: 9521259763f642e3a39bd9c9ed38ae0a
+            _position: {x: 344, y: 201}
+            _displayName: Graph Block
+            _hasInputPort: 1
+            _ports:
+            - Name: Out
+              _connectedBlocks: []
+            _valueOutputs: []
+            _valueInputs: []
+          - _id: 9521259763f642e3a39bd9c9ed38ae0a
+            _position: {x: 344, y: 201}
+            _displayName: Graph Block
+            _hasInputPort: 1
+            _ports:
+            - Name: Out
+              _connectedBlocks: []
+            _valueOutputs: []
+            _valueInputs: []
+          - _id: 9521259763f642e3a39bd9c9ed38ae0a
+            _position: {x: 348, y: 192}
+            _displayName: Graph Block
+            _hasInputPort: 1
+            _ports:
+            - Name: Out
+              _connectedBlocks: []
+            _valueOutputs: []
+            _valueInputs: []
+        _valueOutputs: []
+        _valueInputs: []
+    - rid: 2960972059384479826
       type: {class: StartDialogueBlock, ns: Graph.Logic, asm: GraphLogic}
       data:
-        position: {x: 0, y: 0}
+        _id: 9521259763f642e3a39bd9c9ed38ae0a
+        _position: {x: 348, y: 192}
+        _displayName: Graph Block
+        _hasInputPort: 1
+        _ports:
+        - Name: Out
+          _connectedBlocks: []
+        _valueOutputs: []
+        _valueInputs: []
         dialogue:
-          text: Hello, its a test dialogue
+          text: 
           options:
-          - text: ...
-    - rid: 2960972014945566835
-      type: {class: EndDialogueBlock, ns: Graph.Logic, asm: GraphLogic}
+          - text: Nigga
+    - rid: 2960972059384479844
+      type: {class: StartDialogueBlock, ns: Graph.Logic, asm: GraphLogic}
       data:
-        position: {x: 0, y: 0}
+        _id: fcfbc90ecabf4b138d3b3435d48c18b2
+        _position: {x: 344, y: 521}
+        _displayName: Graph Block
+        _hasInputPort: 1
+        _ports:
+        - Name: Out
+          _connectedBlocks: []
+        _valueOutputs: []
+        _valueInputs: []
+        dialogue:
+          text: 
+          options:
+          - text: Sigma nigger
