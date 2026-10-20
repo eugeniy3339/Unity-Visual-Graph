@@ -12,8 +12,37 @@ namespace Graph.Logic
     {
         public override string DisplayName { get; set; } = "Start Dialogue";
 
-        private List<DialogueOptionGraphPortPair> ports => dialogue.options.ConvertAll(option => new DialogueOptionGraphPortPair(option, new GraphOutputPort(option.text)));
-        public override IReadOnlyList<GraphOutputPort> Ports => ports.ConvertAll(pair => pair.Port);
+        // Ports used to be re-created on every call, so their stored connections were lost.
+        // Now they live in the serialized _ports array (one port per option) and are only
+        // added / renamed / removed when the dialogue options change.
+        public override IReadOnlyList<GraphOutputPort> Ports
+        {
+            get
+            {
+                SyncPorts();
+                return _ports;
+            }
+        }
+
+        private void SyncPorts()
+        {
+            int curCount = _ports != null ? _ports.Length : 0;
+            int desiredCount = dialogue != null ? (dialogue.options != null ? dialogue.options.Count : 0) : 0;
+
+            var result = new GraphOutputPort[desiredCount];
+
+            for(int i = 0; i < desiredCount; i++)
+            {
+                if (_ports.Length > i)
+                    result[i] = _ports[i];
+                else
+                    result[i] = new GraphOutputPort();
+
+                result[i].Name = dialogue.options[i].text;
+            }
+
+            _ports = result;
+        }
 
         public Dialogue dialogue;
 
@@ -27,8 +56,10 @@ namespace Graph.Logic
 
         private void OnOptionSelected(Dialogue.DialogueOption option)
         {
+            var port = GetPort(option);
+            if (port == null) return;
             UnsubscribeFromEvents();
-            Fire(GetPort(option));
+            Fire(port);
         }
 
         private void SubscribeOnEvents()
@@ -51,7 +82,6 @@ namespace Graph.Logic
                 option.onSelected -= OnOptionSelected;
                 subscribedOptions.Remove(option);
             }
-
         }
 
 
@@ -60,22 +90,11 @@ namespace Graph.Logic
         {
             try
             {
-                return ports.Find(pair => pair.Option == option).Port;
+                int index = dialogue.options.IndexOf(option);
+                var current = Ports;
+                return index >= 0 && index < current.Count ? current[index] : null;
             }
             catch { return null; }
-        }
-
-
-        private class DialogueOptionGraphPortPair
-        {
-            public Dialogue.DialogueOption Option;
-            public GraphOutputPort Port;
-
-            public DialogueOptionGraphPortPair(Dialogue.DialogueOption option, GraphOutputPort port)
-            {
-                Option = option;
-                Port = port;
-            }
         }
     }
 }

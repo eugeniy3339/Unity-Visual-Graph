@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace Graph.Logic
@@ -44,8 +46,10 @@ namespace Graph.Logic
 
         public void SaveGraph()
         {
+#if UNITY_EDITOR
             EditorUtility.SetDirty(this);
             AssetDatabase.SaveAssets();
+#endif
         }
     } 
 }

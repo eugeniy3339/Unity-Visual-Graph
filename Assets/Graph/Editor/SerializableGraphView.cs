@@ -160,7 +160,7 @@ namespace Graph.Editor
 
                 foreach (var input in block.ValueInputs)
                 {
-                    if (input.ConnectedOutput == null)
+                    if (input.ConnectedOutput == null || input.ConnectedBlock == null)
                         continue;
 
                     if (!_views.TryGetValue(input.ConnectedBlock, out GraphNodeView fromView))
@@ -230,6 +230,11 @@ namespace Graph.Editor
 
             List<GraphBlock.GraphOutputPort> toAdd = desired
                 .Where(name => !nodeView.OutputPortsByPort.ContainsKey(name)).ToList();
+
+            // ports that were renamed in place (same instance) -> just refresh the label
+            foreach (var kv in nodeView.OutputPortsByPort)
+                if (kv.Value.portName != kv.Key.Name)
+                    kv.Value.portName = kv.Key.Name;
 
             if (toRemove.Count == 0 && toAdd.Count == 0)
                 return false;
@@ -428,7 +433,7 @@ namespace Graph.Editor
 
                 inputPort.DisconectCurOutput();
                 if (fromPort != null)
-                    inputPort.ConnectOutput(to.Block, fromPort);
+                    inputPort.ConnectOutput(from.Block, fromPort);
 
                 return;
             }
