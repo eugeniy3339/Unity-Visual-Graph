@@ -1,10 +1,12 @@
 {
     "name": "GraphLogic",
     "rootNamespace": "Graph.Logic",
-    "references": [],
+    "references": [
+        "DialogueSystemLogic"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
-    "allowUnsafeCode": false,
+    "allowUnsafeCode": true,
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,

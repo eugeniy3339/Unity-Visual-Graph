@@ -12,18 +12,76 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0c6da5cce47e6f42a31af4f9651d5d6, type: 3}
   m_Name: GraphAsset
   m_EditorClassIdentifier: GraphLogic::Graph.Logic.GraphAsset
-  blocks:
-  - rid: 2960971956296351808
-  - rid: 2960971956296351809
+  _blocks:
+  - rid: 2960972087754227874
+  - rid: 2960972087754227876
+  - rid: 2960972087754227879
   references:
     version: 2
     RefIds:
-    - rid: 2960971956296351808
+    - rid: 2960972087754227874
       type: {class: GraphBlock, ns: Graph.Logic, asm: GraphLogic}
       data:
-        position: {x: 205, y: 200}
-    - rid: 2960971956296351809
-      type: {class: DebugLogBlock, ns: Graph.Logic, asm: GraphLogic}
+        _id: a5e1b37bfc8740faafe115df41768042
+        _position: {x: 200, y: 200}
+        _displayName: Entry
+        _hasInputPort: 0
+        _ports:
+        - rid: 2960972087754227875
+        _valueOutputs: []
+        _valueInputs: []
+    - rid: 2960972087754227875
+      type: {class: GraphBlock/GraphOutputPort, ns: Graph.Logic, asm: GraphLogic}
       data:
-        position: {x: 559, y: 225}
-        debugText: Hello World
+        Name: Out
+        _connectedBlocks:
+        - rid: 2960972087754227876
+    - rid: 2960972087754227876
+      type: {class: StartDialogueBlock, ns: Graph.Logic, asm: GraphLogic}
+      data:
+        _id: 28c609a96b6b4938a8e24e0a4e15abf1
+        _position: {x: 385, y: 121}
+        _displayName: Graph Block
+        _hasInputPort: 1
+        _ports:
+        - rid: 2960972087754227878
+        - rid: 2960972087754227886
+        _valueOutputs: []
+        _valueInputs: []
+        dialogue:
+          text: 
+          options:
+          - text: Sigma
+          - text: Bibiz
+    - rid: 2960972087754227878
+      type: {class: GraphBlock/GraphOutputPort, ns: Graph.Logic, asm: GraphLogic}
+      data:
+        Name: Sigma
+        _connectedBlocks:
+        - rid: 2960972087754227879
+    - rid: 2960972087754227879
+      type: {class: StartDialogueBlock, ns: Graph.Logic, asm: GraphLogic}
+      data:
+        _id: 6663a73807ad4e6c95dc9fb2ab50d19f
+        _position: {x: 371, y: 512}
+        _displayName: Graph Block
+        _hasInputPort: 1
+        _ports:
+        - rid: 2960972087754227881
+        _valueOutputs: []
+        _valueInputs: []
+        dialogue:
+          text: 
+          options:
+          - text: Hohol
+    - rid: 2960972087754227881
+      type: {class: GraphBlock/GraphOutputPort, ns: Graph.Logic, asm: GraphLogic}
+      data:
+        Name: Hohol
+        _connectedBlocks:
+        - rid: 2960972087754227876
+    - rid: 2960972087754227886
+      type: {class: GraphBlock/GraphOutputPort, ns: Graph.Logic, asm: GraphLogic}
+      data:
+        Name: Bibiz
+        _connectedBlocks: []

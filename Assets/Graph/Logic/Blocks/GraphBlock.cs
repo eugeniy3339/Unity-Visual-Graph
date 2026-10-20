@@ -7,22 +7,34 @@ namespace Graph.Logic
     [Serializable]
     public class GraphBlock
     {
-        [SerializeReference] public Vector2 position = default;
+        [SerializeField, HideInInspector] private string _id;
+        public string Id
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_id))
+                    _id = Guid.NewGuid().ToString("N");
+                return _id;
+            }
+        }
 
-        public virtual string DisplayName { get; set; } = "Graph Block";
+        [SerializeField, HideInInspector] private Vector2 _position = default;
+        public Vector2 Position { get { return _position; } set { _position = value; } }
 
-        public virtual bool hasAnInputPort { get; set; } = true;
+        [SerializeField, HideInInspector] private string _displayName = "Graph Block";
+        public virtual string DisplayName { get { return _displayName; } set { _displayName = value; } }
 
-        protected GraphOutputPort[] _ports = { new GraphOutputPort("Out") }; 
+        [SerializeField, HideInInspector] private bool _hasInputPort = true;
+        public virtual bool HasInputPort { get { return _hasInputPort; } set { _hasInputPort = value; } }
+
+        [SerializeReference, HideInInspector] protected GraphOutputPort[] _ports = { new GraphOutputPort("Out") }; 
         public virtual IReadOnlyList<GraphOutputPort> Ports => _ports;
 
-        protected GraphValueOutputPort[] _valueOutputs = { };
+        [SerializeReference, HideInInspector] protected GraphValueOutputPort[] _valueOutputs = { };
         public virtual IReadOnlyList<GraphValueOutputPort> ValueOutputs => _valueOutputs;
 
-        protected GraphValueInputPort[] _valueInputs = { };
+        [SerializeReference, HideInInspector] protected GraphValueInputPort[] _valueInputs = { }; 
         public virtual IReadOnlyList<GraphValueInputPort> ValueInputs => _valueInputs;
-         
-
 
         public virtual void StartBlock() => Fire();
 
@@ -44,7 +56,7 @@ namespace Graph.Logic
         {
             foreach (var inputPort in ValueInputs)
             {
-                if (inputPort.name == inputName)
+                if (inputPort.Name == inputName)
                 {
                     return GetInputValue(inputPort);
                 }
@@ -54,14 +66,14 @@ namespace Graph.Logic
 
         public object GetInputValue(GraphValueInputPort graphPort)
         {
-            return graphPort.GetValue();
+            return graphPort?.GetValue();
         }
 
         private GraphValueOutputPort FindValueOutput(string outputName)
         {
             foreach (var outputPort in ValueOutputs)
             {
-                if (outputPort.name == outputName)
+                if (outputPort.Name == outputName)
                 {
                     return outputPort;
                 }
@@ -93,53 +105,118 @@ namespace Graph.Logic
 
 
 
-        [Serializable]
-        public class GraphOutputPort
+        public static GraphBlock CreateBlock(Type blockType)
         {
-            public string name;
-            [SerializeReference] private List<GraphBlock> connectedBlocks = new List<GraphBlock>(); 
-            public IReadOnlyList<GraphBlock> ConnectedBlocks => connectedBlocks;
+            if (blockType == null || !typeof(GraphBlock).IsAssignableFrom(blockType)) return null;
+
+            GraphBlock block = (GraphBlock)Activator.CreateInstance(blockType);
+            return block;
+        }
+
+        public static GraphBlock CreateBlock(Type blockType, Vector2 position)
+        {
+            GraphBlock graphBlock = CreateBlock(blockType);
+            if (graphBlock != null)
+            {
+                graphBlock._position = position;
+            }
+
+            return graphBlock;
+        }
+
+        public static GraphBlock CreateBlock(Type blockType, string displayName)
+        {
+            GraphBlock graphBlock = CreateBlock(blockType);
+            if (graphBlock != null)
+            {
+                graphBlock.DisplayName = displayName;
+            }
+
+            return graphBlock;
+        }
+
+        public static GraphBlock CreateBlock(Type blockType, Vector2 position, string displayName)
+        {
+            GraphBlock graphBlock = CreateBlock(blockType);
+            if(graphBlock != null)
+            {
+                graphBlock._position = position;
+                graphBlock.DisplayName = displayName;
+            }
+
+            return graphBlock;
+        }
+
+
+
+
+        [Serializable]
+        public abstract class GraphPort
+        {
+            public string Name;
+
+            public GraphPort(string name)
+            {
+                Name = name;
+            }
+        }
+
+        [Serializable]
+        public class GraphOutputPort : GraphPort
+        {
+            // SerializeReference: store a LINK to the real block in GraphAsset._blocks (not a private copy)
+            [SerializeReference, HideInInspector] private List<GraphBlock> _connectedBlocks = new List<GraphBlock>(); 
+            public IReadOnlyList<GraphBlock> ConnectedBlocks => _connectedBlocks;
 
             public void ConnectBlock(GraphBlock graphBlock)
             {
-                connectedBlocks.Add(graphBlock);
+                if (graphBlock == null || _connectedBlocks.Contains(graphBlock)) return;
+                _connectedBlocks.Add(graphBlock);
             }
 
             public void DisconnectBlock(GraphBlock graphBlock)
             {
-                if (!connectedBlocks.Contains(graphBlock)) return;
-                connectedBlocks.Remove(graphBlock);
+                if (!_connectedBlocks.Contains(graphBlock)) return;
+                _connectedBlocks.Remove(graphBlock);
             }
 
             public void Fire()
             {
                 foreach(var connectedBlock in ConnectedBlocks)
                 {
-                    connectedBlock.StartBlock();
+                    if (connectedBlock != null)
+                        connectedBlock.StartBlock();
                 }
             }
 
-            public GraphOutputPort(string name)
-            {
-                this.name = name;
-            }
+            public GraphOutputPort(string name) : base(name) { }
+            public GraphOutputPort() : base(string.Empty) { }
         }
 
         [Serializable]
-        public class GraphValueInputPort
+        public class GraphValueInputPort : GraphPort
         {
-            public string name = "Input";
-            public Type type;
-            public Color portColor = Color.blue;
-            [SerializeReference] private GraphValueOutputPort _connectedPort;
-            public GraphValueOutputPort connectedPort { get { return _connectedPort; } }
+            // System.Type can't be serialized by Unity -> keep its name
+            [SerializeField, HideInInspector] private string _typeName;
+            public Type Type
+            {
+                get { return string.IsNullOrEmpty(_typeName) ? null : Type.GetType(_typeName); }
+                set { _typeName = value != null ? value.AssemblyQualifiedName : null; }
+            }
 
-            public bool ConnectOutput(GraphValueOutputPort outputToConnect)
+            // SerializeReference: must point at the SAME port / block instances that live in the other block
+            [SerializeReference, HideInInspector] private GraphValueOutputPort _connectedPort;
+            public GraphValueOutputPort ConnectedOutput { get { return _connectedPort; } }
+            [SerializeReference, HideInInspector] private GraphBlock _connectedBlock;
+            public GraphBlock ConnectedBlock { get { return _connectedBlock; } }
+
+            public bool ConnectOutput(GraphBlock block, GraphValueOutputPort outputToConnect)
             {
                 if (outputToConnect == null) return false;
-                if (!type.IsAssignableFrom(outputToConnect.type)) return false;
+                if (Type == null || outputToConnect.Type == null || !Type.IsAssignableFrom(outputToConnect.Type)) return false;
                 if (_connectedPort != null) return false;
                 _connectedPort = outputToConnect;
+                _connectedBlock = block;
 
                 return true;
             }
@@ -147,57 +224,52 @@ namespace Graph.Logic
             public void DisconectCurOutput()
             {
                 _connectedPort = null;
+                _connectedBlock = null;
             }
 
             public object GetValue()
             {
-                return _connectedPort.value;
+                return _connectedPort?.Value;
             }
 
-            public GraphValueInputPort(string name, Type type)
+            public GraphValueInputPort(string name, Type type) : base(name)
             {
-                this.name = name;
-                this.type = type;
+                this.Type = type;
             }
-            public GraphValueInputPort(string name, Type type, Color color)
-            {
-                this.name = name;
-                this.type = type;
-                this.portColor = color;
-            }
+            public GraphValueInputPort() : base(string.Empty) { }
         }
 
         [Serializable] 
-        public class GraphValueOutputPort
+        public class GraphValueOutputPort : GraphPort
         {
-            public string name = "Output";
-            public Type type;
-            public Color portColor = Color.blue;
-            public object value { get; private set; }
+            [SerializeField, HideInInspector] private string _typeName;
+            public Type Type
+            {
+                get { return string.IsNullOrEmpty(_typeName) ? null : Type.GetType(_typeName); }
+                set { _typeName = value != null ? value.AssemblyQualifiedName : null; }
+            }
+
+            // Runtime-only value (not serialized)
+            public object Value { get; private set; }
 
             public object GetValue()
             {
-                return value;
+                return Value;
             }
 
             public bool SetValue(object value)
             {
-                if (!type.IsAssignableFrom(value.GetType())) return false;
-                this.value = value;
+                if (value == null || Type == null || !Type.IsAssignableFrom(value.GetType())) return false;
+                this.Value = value;
                 return true;
             }
 
-            public GraphValueOutputPort(string name, Type type)
+            public GraphValueOutputPort(string name, Type type) : base(name)
             {
-                this.name = name;
-                this.type = type;
+                this.Name = name;
+                this.Type = type;
             }
-            public GraphValueOutputPort(string name, Type type, Color color)
-            {
-                this.name = name;
-                this.type = type;
-                this.portColor = color;
-            }
+            public GraphValueOutputPort() : base(string.Empty) { }
         }
     }
 }

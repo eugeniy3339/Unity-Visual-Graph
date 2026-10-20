@@ -7,16 +7,8 @@ namespace Graph.Logic
     {
         public override string DisplayName { get; set; } = "#SCRIPTNAME#";
 
-        public override bool hasAnInputPort { get; set; } = true;
-
-        protected GraphOutputPort[] ports = { new GraphOutputPort("Out") };
-        public override IReadOnlyList<GraphOutputPort> Ports => _ports;
-
-        protected GraphValueOutputPort[] valueOutputs = { };
-        public override IReadOnlyList<GraphValueOutputPort> ValueOutputs => _valueOutputs;
-
-        protected GraphValueInputPort[] valueInputs = { };
-        public override IReadOnlyList<GraphValueInputPort> ValueInputs => _valueInputs;
+        // _ports / _valueInputs / _valueOutputs are inherited from GraphBlock and serialized.
+        // Override Ports / ValueInputs / ValueOutputs only if this block needs different ones.
 
         public override void StartBlock()
         {

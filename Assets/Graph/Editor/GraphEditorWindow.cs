@@ -1,127 +1,115 @@
+using Graph.Logic;
 using UnityEditor;
+using UnityEditor.Callbacks;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Graph.Logic;
 
 namespace Graph.Editor
 {
     /// <summary>
-    /// The main Visual Graph Editor window. 
-    /// Opens when the user double-clicks a GraphAsset or clicks "Open Graph" in its Inspector.
+    /// Node editor for <see cref="GraphAsset"/>. Opens on double-click of the asset,
+    /// from the "Open Graph Editor" inspector button, or by selecting a graph in the toolbar.
+    /// If a graph is already open, opening another one saves the current graph and swaps to the new one.
     /// </summary>
-    public class GraphEditorWindow : EditorWindow
+    public sealed class GraphEditorWindow : EditorWindow
     {
-        // ── State ────────────────────────────────────────────────────────────────
-        private GraphAsset _asset;
-        private GraphViewCanvas _graphView;
-        private Label _titleLabel;
+        [SerializeField] private GraphAsset _asset;
 
-        // ── Static open helpers ──────────────────────────────────────────────────
+        private SerializableGraphView _view;
+        private ObjectField _assetField;
+
         public static void Open(GraphAsset asset)
         {
-            if (asset == null) return;
+            var window = GetWindow<GraphEditorWindow>("Graph");
+            window.BuildIfNeeded();
+            window.SetAsset(asset);
+            window.Focus();
+        }
 
-            // Reuse an existing window that already shows this asset, or open a new one.
-            var windows = Resources.FindObjectsOfTypeAll<GraphEditorWindow>();
-            foreach (var w in windows)
+        [OnOpenAsset]
+        private static bool OnOpenAsset(int instanceId, int line)
+        {
+            if (EditorUtility.InstanceIDToObject(instanceId) is GraphAsset asset)
             {
-                if (w._asset == asset)
-                {
-                    w.Focus();
-                    return;
-                }
+                Open(asset);
+                return true;
             }
-
-            var window = CreateWindow<GraphEditorWindow>("Visual Graph Editor");
-            window.minSize = new Vector2(800, 500);
-            window.LoadAsset(asset);
-            window.Show();
+            return false;
         }
 
-        // ── Unity callbacks ──────────────────────────────────────────────────────
-        private void OnEnable()
+        private void CreateGUI() => BuildIfNeeded();
+
+        public void SetAsset(GraphAsset asset)
         {
-            BuildUI();
-            if (_asset != null) LoadAsset(_asset);
+            if (_asset == asset && _view != null && _view.Asset == asset)
+                return;
+
+            // Save the currently loaded graph before swapping
+            if (_asset != null && _asset != asset)
+                _asset.SaveGraph();
+
+            _asset = asset;
+            titleContent = new GUIContent(asset != null ? asset.name : "Graph");
+
+            if (_assetField != null && _assetField.value != asset)
+                _assetField.SetValueWithoutNotify(asset);
+
+            if (_view != null)
+            {
+                _view.Load(asset);
+                if (asset != null)
+                    _view.schedule.Execute(() => _view.FrameAll()).ExecuteLater(50); //idk
+            }
         }
 
-        private void OnDisable()
+        private void BuildIfNeeded()
         {
-            SaveGraph();
-        }
+            if (_view != null)
+                return;
 
-        // ── UI construction ──────────────────────────────────────────────────────
-        private void BuildUI()
-        {
-            // Top toolbar
-            var toolbar = new VisualElement();
-            toolbar.style.flexDirection = FlexDirection.Row;
-            toolbar.style.backgroundColor = new StyleColor(new Color(0.18f, 0.18f, 0.18f));
-            toolbar.style.height = 24;
-            toolbar.style.paddingLeft = 6;
-            toolbar.style.paddingRight = 6;
-            toolbar.style.alignItems = Align.Center;
+            var toolbar = new Toolbar();
 
-            _titleLabel = new Label("No Graph Loaded");
-            _titleLabel.style.color = new StyleColor(Color.gray);
-            _titleLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
-            _titleLabel.style.flexGrow = 1;
-            toolbar.Add(_titleLabel);
+            _assetField = new ObjectField
+            {
+                objectType = typeof(GraphAsset),
+                value = _asset,
+                allowSceneObjects = false,
+                tooltip = "Active Graph Asset. Drop or pick another graph to switch.",
+                style = { width = 200 }
+            };
+            _assetField.RegisterValueChangedCallback(evt =>
+            {
+                SetAsset(evt.newValue as GraphAsset);
+            });
+            toolbar.Add(_assetField);
 
-            var saveButton = new Button(SaveGraph) { text = "Save" };
-            saveButton.style.width = 60;
-            toolbar.Add(saveButton);
-
-            var pingButton = new Button(PingAsset) { text = "Ping" };
-            pingButton.style.width = 60;
-            toolbar.Add(pingButton);
-
+            toolbar.Add(new ToolbarButton(() => _view?.Save()) { text = "Save" });
+            toolbar.Add(new ToolbarButton(() => _view?.FrameAll()) { text = "Frame All" });
+            toolbar.Add(new ToolbarButton(() => _view?.RefreshPortsNow()) { text = "Refresh Ports" });
+            toolbar.Add(new ToolbarButton(() => _view?.Rebuild()) { text = "Reload" });
             rootVisualElement.Add(toolbar);
 
-            // Graph canvas placeholder — replaced when an asset is loaded
-            var placeholder = new Label("Double-click a GraphAsset to open it here.")
+            _view = new SerializableGraphView(this) { style = { flexGrow = 1 } };
+            rootVisualElement.Add(_view);
+
+            if (_asset != null)
             {
-                name = "placeholder"
-            };
-            placeholder.style.position = Position.Absolute;
-            placeholder.style.top = new Length(50, LengthUnit.Percent);
-            placeholder.style.left = new Length(50, LengthUnit.Percent);
-            placeholder.style.color = new StyleColor(Color.gray);
-            rootVisualElement.Add(placeholder);
+                _view.Load(_asset);
+                _view.schedule.Execute(() => _view.FrameAll()).ExecuteLater(50);
+            }
         }
 
-        // ── Asset loading ────────────────────────────────────────────────────────
-        private void LoadAsset(GraphAsset asset)
+        private void OnEnable()
         {
-            _asset = asset;
-            titleContent = new GUIContent(asset.name, EditorGUIUtility.IconContent("d_BlendTree Icon").image);
-
-            // Update title bar label
-            if (_titleLabel != null)
-                _titleLabel.text = asset.name;
-
-            // Remove placeholder / previous graph view
-            var old = rootVisualElement.Q("placeholder");
-            old?.RemoveFromHierarchy();
-            _graphView?.RemoveFromHierarchy();
-
-            // Create the new graph view
-            _graphView = new GraphViewCanvas(asset, this);
-            _graphView.style.flexGrow = 1;
-            rootVisualElement.Add(_graphView);
+            // Survive domain reloads / window docking.
+            BuildIfNeeded();
+            if (_asset != null)
+            {
+                _view?.Load(_asset);
+            }
         }
 
-        // ── Persistence ──────────────────────────────────────────────────────────
-        public void SaveGraph()
-        {
-            if (_asset == null) return;
-            _graphView?.CommitPositions();
-            _asset.SaveGraph();
-        }
-
-        private void PingAsset()
-        {
-            if (_asset != null) EditorGUIUtility.PingObject(_asset);
-        }
+        private void OnDisable() => _view?.Save();
     }
 }

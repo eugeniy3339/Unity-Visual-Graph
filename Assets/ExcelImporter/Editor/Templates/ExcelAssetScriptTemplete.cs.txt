@@ -1,0 +1,16 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+[ExcelAsset]
+public class #ASSETSCRIPTNAME# : ScriptableObject
+{
+	[Serializable]
+	public class CustomClass
+	{
+#ENTITYFIELDS#
+	}
+
+	public List<ExcelTab<CustomClass>> tabs;
+}
