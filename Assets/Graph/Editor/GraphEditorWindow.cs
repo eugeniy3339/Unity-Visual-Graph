@@ -88,6 +88,7 @@ namespace Graph.Editor
             toolbar.Add(new ToolbarButton(() => _view?.FrameAll()) { text = "Frame All" });
             toolbar.Add(new ToolbarButton(() => _view?.RefreshPortsNow()) { text = "Refresh Ports" });
             toolbar.Add(new ToolbarButton(() => _view?.Rebuild()) { text = "Reload" });
+            toolbar.Add(CustomToolsMenu.Create());
             rootVisualElement.Add(toolbar);
 
             _view = new SerializableGraphView(this) { style = { flexGrow = 1 } };

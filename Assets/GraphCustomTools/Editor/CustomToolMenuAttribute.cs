@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace GraphCustomTools.Logic
+namespace GraphCustomTools.Editor
 {
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
     public class CustomToolMenuAttribute : Attribute
