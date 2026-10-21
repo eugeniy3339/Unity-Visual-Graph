@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace GraphCustomTools.Logic
 {
-    public class GraphCustomTool
+    public class CustomTool
     {
     
     }
