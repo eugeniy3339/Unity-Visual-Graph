@@ -10,7 +10,7 @@ using UnityEngine.UIElements;
 
 namespace Graph.Editor
 {
-    internal sealed class SerializableGraphView : GraphView
+    public sealed class SerializableGraphView : GraphView
     {
         private readonly EditorWindow _window;
         private readonly BlockSearchWindowProvider _search;
@@ -474,8 +474,7 @@ namespace Graph.Editor
             if (_serializedAsset != null)
                 _serializedAsset.Update();
 
-            EditorUtility.SetDirty(_asset);
-            AssetDatabase.SaveAssetIfDirty(_asset);
+            _asset.SaveGraph();
         }
 
 

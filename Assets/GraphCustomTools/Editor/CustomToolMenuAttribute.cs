@@ -1,13 +1,13 @@
 using System;
 using UnityEngine;
 
-namespace GraphCustomTools.Logic
+namespace GraphCustomTools.Editor
 {
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
-    public class GraphCustomToolMenuAttribute : Attribute
+    public class CustomToolMenuAttribute : Attribute
     {
         public string Path { get; }
 
-        public GraphCustomToolMenuAttribute(string path) => Path = path;
+        public CustomToolMenuAttribute(string path) => Path = path;
     }
 }

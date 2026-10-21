@@ -3,7 +3,6 @@
     "rootNamespace": "GraphCustomTools.Logic",
     "references": [
         "GraphLogic",
-        "GraphEditor",
         "ExcelImporter",
         "DialogueSystemLogic"
     ],
