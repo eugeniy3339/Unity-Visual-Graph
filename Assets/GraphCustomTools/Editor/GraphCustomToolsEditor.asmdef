@@ -2,7 +2,9 @@
     "name": "GraphCustomToolsEditor",
     "rootNamespace": "GraphCustomTools.Editor",
     "references": [
-        "GraphCustomToolsLogic"
+        "GraphCustomToolsLogic",
+        "GraphLogic",
+        "ExcelImporter"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
