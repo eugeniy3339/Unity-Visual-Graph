@@ -4,7 +4,8 @@
     "references": [
         "GraphCustomToolsLogic",
         "GraphLogic",
-        "ExcelImporter"
+        "ExcelImporter",
+        "GraphEditor"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

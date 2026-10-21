@@ -14,9 +14,12 @@ namespace Graph.Editor
     /// </summary>
     public sealed class GraphEditorWindow : EditorWindow
     {
+        public static GraphEditorWindow Instance { get { return GetWindow<GraphEditorWindow>("Graph"); } }
+
         [SerializeField] private GraphAsset _asset;
 
         private SerializableGraphView _view;
+        public SerializableGraphView View { get { return _view; } }
         private ObjectField _assetField;
 
         public static void Open(GraphAsset asset)

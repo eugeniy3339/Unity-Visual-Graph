@@ -3,7 +3,7 @@
     "rootNamespace": "Graph.Editor",
     "references": [
         "GraphLogic",
-        "GraphCustomToolsEditor"
+        "GraphCustomToolsLogic"
     ],
     "includePlatforms": [
         "Editor"

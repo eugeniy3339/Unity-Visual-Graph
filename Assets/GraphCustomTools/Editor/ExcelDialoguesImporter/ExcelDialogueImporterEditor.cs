@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Graph.Editor;
 
 namespace GraphCustomTools.Editor 
 {
@@ -17,6 +18,7 @@ namespace GraphCustomTools.Editor
         private static readonly Color SelectedColor = new Color(0.17f, 0.36f, 0.53f, 1f);
 
         [SerializeField] private Dialogues _dialogues;
+        [SerializeField] private string _ningger;
 
         private int _selectedIndex = -1;
         private ScrollView _tabList;
@@ -149,8 +151,8 @@ namespace GraphCustomTools.Editor
 
             Undo.RecordObject(TargetGraph, "Import Excel Dialogue");
             ExcelDialogueImporter.ImportDialogueToTheGraph(_dialogues.tabs[_selectedIndex], TargetGraph);
-            EditorUtility.SetDirty(TargetGraph);
             TargetGraph.SaveGraph();
+            GraphEditorWindow.Instance?.View?.Rebuild();
         }
     }
 }
