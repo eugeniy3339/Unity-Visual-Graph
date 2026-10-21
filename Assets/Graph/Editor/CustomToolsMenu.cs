@@ -1,9 +1,11 @@
+using Graph.Logic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Graph.Editor
@@ -11,16 +13,19 @@ namespace Graph.Editor
     /// <summary>
     /// Builds the "Custom Tools" toolbar dropdown for <see cref="GraphEditorWindow"/>.
     /// Entries come from every class marked with GraphCustomTools.Logic.CustomToolMenuAttribute.
-    /// The attribute is resolved by name (reflection) because GraphCustomToolsLogic already
-    /// references GraphEditor, so GraphEditor cannot reference it back (cyclic asmdef reference).
+    /// Choosing an entry calls the tool's static <c>Open(GraphAsset)</c> method.
+    /// Both the attribute and the tool are resolved by reflection because GraphCustomToolsLogic already
+    /// references GraphEditor, so GraphEditor cannot reference them back (cyclic asmdef reference).
     /// </summary>
     internal static class CustomToolsMenu
     {
-        private const string AttributeAssemblyName = "GraphCustomToolsLogic";
-        private const string AttributeTypeName = "GraphCustomTools.Logic.CustomToolMenuAttribute";
+        private const string AttributeAssemblyName = "GraphCustomToolsEditor";
+        private const string AttributeTypeName = "GraphCustomTools.Editor.CustomToolMenuAttribute";
         private const string AttributePathProperty = "Path";
+        private const string OpenMethodName = "Open";
 
-        public static ToolbarMenu Create()
+        /// <param name="getGraph">Returns the graph currently loaded in the window (may be null).</param>
+        public static ToolbarMenu Create(Func<GraphAsset> getGraph)
         {
             var menu = new ToolbarMenu
             {
@@ -39,13 +44,52 @@ namespace Graph.Editor
                 return menu;
             }
 
-            foreach (var (_, path) in tools)
+            foreach (var (type, path) in tools)
             {
-                // Intentionally empty: tool execution is not wired up yet.
-                menu.menu.AppendAction(path, _ => { });
+                Type toolType = type;
+                menu.menu.AppendAction(
+                    path,
+                    _ => Open(toolType, getGraph()),
+                    // Tools work on a graph, so they are unavailable until one is loaded.
+                    _ => getGraph() != null
+                        ? DropdownMenuAction.Status.Normal
+                        : DropdownMenuAction.Status.Disabled);
             }
 
             return menu;
+        }
+
+        /// <summary>Opens a custom tool for the given graph by calling its static Open(GraphAsset).</summary>
+        private static void Open(Type toolType, GraphAsset graph)
+        {
+            if (graph == null)
+            {
+                Debug.LogWarning($"Cannot open {toolType.Name}: no graph is loaded.");
+                return;
+            }
+
+            MethodInfo open = toolType
+                .GetMethods(BindingFlags.Public | BindingFlags.Static)
+                .FirstOrDefault(m =>
+                    m.Name == OpenMethodName
+                    && !m.IsGenericMethodDefinition
+                    && m.GetParameters().Length == 1
+                    && m.GetParameters()[0].ParameterType.IsAssignableFrom(typeof(GraphAsset)));
+
+            if (open == null)
+            {
+                Debug.LogWarning($"{toolType.Name} has no public static {OpenMethodName}({nameof(GraphAsset)}) method.");
+                return;
+            }
+
+            try
+            {
+                open.Invoke(null, new object[] { graph });
+            }
+            catch (TargetInvocationException e)
+            {
+                Debug.LogException(e.InnerException ?? e);
+            }
         }
 
         private static List<(Type type, string path)> FindTools()

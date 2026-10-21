@@ -17,6 +17,7 @@ namespace GraphCustomTools.Logic
             }
 
             AddNextBlock(typeof(EndDialogueBlock), graphAsset);
+            graphAsset.SaveGraph();
         }
 
         private static GraphBlock AddNextBlock(Type blockType, GraphAsset graphAsset)
