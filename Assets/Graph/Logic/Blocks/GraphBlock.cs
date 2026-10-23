@@ -52,21 +52,22 @@ namespace Graph.Logic
 
 
 
-        public object GetInputValue(string inputName)
+        public T GetInputValue<T>(string inputName)
         {
             foreach (var inputPort in ValueInputs)
             {
                 if (inputPort.Name == inputName)
                 {
-                    return GetInputValue(inputPort);
+                    return GetInputValue<T>(inputPort);
                 }
             }
-            return null;
+            return default;
         }
 
-        public object GetInputValue(GraphValueInputPort graphPort)
+        public T GetInputValue<T>(GraphValueInputPort graphPort)
         {
-            return graphPort?.GetValue();
+            if (graphPort == null) return default;
+            return graphPort.GetValue<T>();
         }
 
         private GraphValueOutputPort FindValueOutput(string outputName)
@@ -227,9 +228,10 @@ namespace Graph.Logic
                 _connectedBlock = null;
             }
 
-            public object GetValue()
+            public T GetValue<T>()
             {
-                return _connectedPort?.Value;
+                if (_connectedPort == null) return default;
+                return _connectedPort.GetValue<T>();
             }
 
             public GraphValueInputPort(string name, Type type) : base(name)
