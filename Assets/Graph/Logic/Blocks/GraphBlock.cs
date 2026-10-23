@@ -125,7 +125,7 @@ namespace Graph.Logic
             return graphBlock;
         }
 
-        public static GraphBlock CreateBlock(Type blockType, string displayName)
+        public static T CreateBlock<T>(Type blockType, string displayName) where T : GraphBlock
         {
             GraphBlock graphBlock = CreateBlock(blockType);
             if (graphBlock != null)
@@ -133,10 +133,10 @@ namespace Graph.Logic
                 graphBlock.DisplayName = displayName;
             }
 
-            return graphBlock;
+            return (T)graphBlock;
         }
 
-        public static GraphBlock CreateBlock(Type blockType, Vector2 position, string displayName)
+        public static T CreateBlock<T>(Type blockType, Vector2 position, string displayName) where T : GraphBlock
         {
             GraphBlock graphBlock = CreateBlock(blockType);
             if (graphBlock != null)
@@ -145,7 +145,7 @@ namespace Graph.Logic
                 graphBlock.DisplayName = displayName;
             }
 
-            return graphBlock;
+            return (T)graphBlock;
         }
 
 
