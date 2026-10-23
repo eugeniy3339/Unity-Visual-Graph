@@ -1,12 +1,33 @@
-Graph Asset:
+# Graph Asset
 
-To create new Graph just right click Project window, select Create, Graphs and then Create new Graph Asset.
-To open Graph Editor just double click a Graph Asset, or select it and click Open Graph in the Inspector window.
+[← Back to General](General.md) | [Next: Graph Blocks →](GraphBlocks.md)
 
-GraphAsset script:
-public:
-StartGraph
-StartGraph() function finds the first graph block and calls its StartBlock function.
+A **Graph Asset** is a `ScriptableObject` that stores the whole graph and all of its [blocks](GraphBlocks.md).
 
-Blocks
-Blocks is a public GraphBlock List, that contains all the blocks of the graph.
+## Creating a Graph
+
+1. Right-click in the **Project** window.
+2. Select **Create → Graphs → Create new Graph Asset**.
+
+## Opening the Graph Editor
+
+Do one of the following:
+
+- Double-click the Graph Asset.
+- Select the Graph Asset and click **Open Graph** in the **Inspector** window.
+
+## `GraphAsset` Script
+
+### Public members
+
+#### `StartGraph()`
+
+Finds the first block of the graph and calls its [`StartBlock()`](GraphBlocks.md#startblock) function.
+
+```csharp
+graphAsset.StartGraph();
+```
+
+#### `Blocks`
+
+A public `List<GraphBlock>` that contains **all** the blocks of the graph.

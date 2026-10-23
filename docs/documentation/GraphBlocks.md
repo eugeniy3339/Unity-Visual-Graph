@@ -1,80 +1,146 @@
-Graph Asset:
+# Graph Blocks
 
-Creation of new block:
-To create new Block Script just right click Project window, select Create, Graphs and then New Block Graph Script, or siply create new class, that inherits from GraphBlock.
-To create new Block in the graph right click the graph's background, select Create Node and then select the block you want.
+[← Back to General](General.md) | [← Graph Asset](GraphAsset.md)
 
-Block Script:
-Block class must have Serializable Attribute on it, for it to save.
-To configure block's "Group", "Name" when creating it in the graph add BlockMenu Attribute on it.
+Blocks are the nodes of a graph. Every block inherits from the `GraphBlock` class and lives inside a [Graph Asset](GraphAsset.md).
 
-F.E.
+## Contents
+
+- [Creating a new block](#creating-a-new-block)
+- [Block script](#block-script)
+- [Public members](#public-members)
+  - [`DisplayName`](#displayname) · [`HasInputPort`](#hasinputport) · [`Ports`](#ports) · [`ValueOutputs`](#valueoutputs) · [`ValueInputs`](#valueinputs)
+  - [`StartBlock`](#startblock) · [`GetInputValue`](#getinputvalue) · [`GetOutputValue`](#getoutputvalue) · [`SetOutputValue`](#setoutputvalue) · [`Fire`](#fire) · [`CreateBlock`](#createblock)
+
+---
+
+## Creating a new block
+
+### 1. Create a block script
+
+Either:
+
+- Right-click in the **Project** window and select **Create → Graphs → New Block Graph Script**, or
+- Create a new class that inherits from `GraphBlock`.
+
+### 2. Add the block to a graph
+
+1. Right-click the graph's background.
+2. Select **Create Node**.
+3. Select the block you want.
+
+---
+
+## Block script
+
+> [!IMPORTANT]
+> The block class **must** have the `[Serializable]` attribute, otherwise it will not be saved.
+
+To configure the block's **group** and **name** in the *Create Node* menu, add the `[BlockMenu]` attribute.
+
+**Example:**
+
 ```csharp
 [Serializable]
 [BlockMenu("Custom/TestBlock")]
-public class TestBlock : GraphBlock {
+public class TestBlock : GraphBlock
+{
 
 }
 ```
 
-public:
-DisplayName
-DisplayName stores block display name. DisplayName can be overrided.
+---
 
-HasInputPort
-HasInputPort stores if block have input port. HasInputPort can be overrided.
+## Public members
 
-Ports
-Read only list of GraphOutputPort. Ports can be overrided. The variable Ports returns should have SerializeReference/SerializeField on it, so the Ports can be saved.
+### `DisplayName`
 
-F.E
+Stores the block's display name. Can be **overridden**.
+
+### `HasInputPort`
+
+Stores whether the block has an input port. Can be **overridden**.
+
+### `Ports`
+
+A read-only list of `GraphOutputPort`. Can be **overridden**.
+
+> [!NOTE]
+> The field that `Ports` returns must have `[SerializeReference]` or `[SerializeField]`, so the ports can be saved. The same applies to [`ValueOutputs`](#valueoutputs) and [`ValueInputs`](#valueinputs).
+
+**Example:**
+
 ```csharp
-[SerializeReference, HideInInspector] protected GraphOutputPort[] _ports = { new GraphOutputPort("Out") }; 
+[SerializeReference, HideInInspector]
+protected GraphOutputPort[] _ports = { new GraphOutputPort("Out") };
+
 public virtual IReadOnlyList<GraphOutputPort> Ports => _ports;
 ```
 
-ValueOutputs
-Read only list of GraphValueOutputPort. ValueOutputs can be overrided. The variable ValueOutputs returns should have SerializeReference/SerializeField on it, so the ValueOutputs can be saved.
+### `ValueOutputs`
 
-F.E
+A read-only list of `GraphValueOutputPort`. Can be **overridden**. The returned field must have `[SerializeReference]` or `[SerializeField]`.
+
+**Example:**
+
 ```csharp
-[SerializeReference, HideInInspector] protected GraphValueOutputPort[] _valueOutputs = { };
+[SerializeReference, HideInInspector]
+protected GraphValueOutputPort[] _valueOutputs = { };
+
 public virtual IReadOnlyList<GraphValueOutputPort> ValueOutputs => _valueOutputs;
 ```
 
-ValueInputs
-Read only list of GraphValueInputPort. ValueInputs can be overrided. The variable ValueInputs returns should have SerializeReference/SerializeField on it, so the ValueInputs can be saved.
+### `ValueInputs`
 
-F.E
+A read-only list of `GraphValueInputPort`. Can be **overridden**. The returned field must have `[SerializeReference]` or `[SerializeField]`.
+
+**Example:**
+
 ```csharp
-[SerializeReference, HideInInspector] protected GraphValueInputPort[] _valueInputs = { }; 
+[SerializeReference, HideInInspector]
+protected GraphValueInputPort[] _valueInputs = { };
+
 public virtual IReadOnlyList<GraphValueInputPort> ValueInputs => _valueInputs;
 ```
 
-StartBlock
-Start Block is being called by GraphAsset on the first graph's block when StartGraph function is being called, or from other blocks, when theirs Fire function with port, that is connected to the block is being called. Start Block can be overrided (default calls Fire(0)).
+### `StartBlock`
 
-GetInputValue
-GetInputValue takes port name or the port it self and returns value of the input port.
+Called when the block should start executing. It is called:
 
-F.E
+- by the [`GraphAsset`](GraphAsset.md#startgraph) on the **first block** of the graph when `StartGraph()` is called, or
+- by **other blocks**, when their [`Fire`](#fire) function is called with a port that is connected to this block.
+
+Can be **overridden**. By default it calls `Fire(0)`.
+
+### `GetInputValue`
+
+Takes a **port name** or the **port itself** and returns the value of the input port.
+
+**Example:**
+
 ```csharp
-[SerializeReference, HideInInspector] private GraphValueInputPort[] _inputPorts = { new GraphValueInputPort("TestInput", typeof(string)) };
+[SerializeReference, HideInInspector]
+private GraphValueInputPort[] _inputPorts = { new GraphValueInputPort("TestInput", typeof(string)) };
+
 public override IReadOnlyList<GraphValueInputPort> ValueInputs => _inputPorts;
 
 public override void StartBlock()
 {
-    string value = GetInputValue<string>("TestOutput");
+    string value = GetInputValue<string>("TestInput");
 }
 ```
 
-GetOutputValue
-GetOutputValue takes port name or the port it self and returns value of the output port.
+### `GetOutputValue`
 
-F.E
+Takes a **port name** or the **port itself** and returns the value of the output port.
+
+**Example:**
+
 ```csharp
-[SerializeReference, HideInInspector] private GraphValueOutputPort[] _ouputPorts = { new GraphValueOutputPort("TestOutput", typeof(string)) };
-public override IReadOnlyList<GraphValueOutputPort> ValueOutputs => _ouputPorts;
+[SerializeReference, HideInInspector]
+private GraphValueOutputPort[] _outputPorts = { new GraphValueOutputPort("TestOutput", typeof(string)) };
+
+public override IReadOnlyList<GraphValueOutputPort> ValueOutputs => _outputPorts;
 
 public override void StartBlock()
 {
@@ -82,13 +148,17 @@ public override void StartBlock()
 }
 ```
 
-SetOutputValue
-SetOutputValue takes port name or the port it self and value you want to set and sets value of the output port.
+### `SetOutputValue`
 
-F.E
+Takes a **port name** (or the **port itself**) and the **value** you want to set, and sets the value of the output port.
+
+**Example:**
+
 ```csharp
-[SerializeReference, HideInInspector] private GraphValueOutputPort[] _ouputPorts = { new GraphValueOutputPort("TestOutput", typeof(string)) };
-public override IReadOnlyList<GraphValueOutputPort> ValueOutputs => _ouputPorts;
+[SerializeReference, HideInInspector]
+private GraphValueOutputPort[] _outputPorts = { new GraphValueOutputPort("TestOutput", typeof(string)) };
+
+public override IReadOnlyList<GraphValueOutputPort> ValueOutputs => _outputPorts;
 
 public override void StartBlock()
 {
@@ -96,21 +166,35 @@ public override void StartBlock()
 }
 ```
 
-Fire
-Fire function takes port's index or the port it self and calls StartBlock functions of the connected blocks.
+### `CreateBlock`
 
-F.E
+A **static** function that creates a block of the given type and returns it.
+
+**Example:**
+
+```csharp
+GraphBlock graphBlock = GraphBlock.CreateBlock<GraphBlock>("New Block");
+```
+
+---
+
+## Protected members
+
+### `Fire`
+
+Takes a **port index** or the **port itself** and calls the [`StartBlock`](#startblock) functions of the blocks connected to that port.
+
+**Example:**
+
 ```csharp
 public override void StartBlock()
 {
-    Fire(0); //Starts blocks, that are connected to the port with index 0
+    Fire(0); // Starts the blocks that are connected to the port with index 0
 }
 ```
 
-CreateBlock
-CreateBlock is a static function, that creates a block of the Type.
+**Start order:**
 
-F.E
-```csharp
-GraphBlock.CreateBlock<GraphBlock>("New Block");
-```
+![Blocks start queue](images/BlocksStartQueue.png)
+
+*Blocks are started in the order shown above: the entry block fires three chains, each one is followed to its end before the next one starts.*
