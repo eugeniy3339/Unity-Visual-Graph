@@ -27,13 +27,13 @@ namespace Graph.Logic
         [SerializeField, HideInInspector] private bool _hasInputPort = true;
         public virtual bool HasInputPort { get { return _hasInputPort; } set { _hasInputPort = value; } }
 
-        [SerializeReference, HideInInspector] protected GraphOutputPort[] _ports = { new GraphOutputPort("Out") }; 
+        [SerializeReference, HideInInspector] protected GraphOutputPort[] _ports = { new GraphOutputPort("Out") };
         public virtual IReadOnlyList<GraphOutputPort> Ports => _ports;
 
         [SerializeReference, HideInInspector] protected GraphValueOutputPort[] _valueOutputs = { };
         public virtual IReadOnlyList<GraphValueOutputPort> ValueOutputs => _valueOutputs;
 
-        [SerializeReference, HideInInspector] protected GraphValueInputPort[] _valueInputs = { }; 
+        [SerializeReference, HideInInspector] protected GraphValueInputPort[] _valueInputs = { };
         public virtual IReadOnlyList<GraphValueInputPort> ValueInputs => _valueInputs;
 
         public virtual void StartBlock() => Fire();
@@ -81,15 +81,15 @@ namespace Graph.Logic
             return null;
         }
 
-        public object GetOutputValue(string outputName)
+        public T GetOutputValue<T>(string outputName)
         {
-            return GetOutputValue(FindValueOutput(outputName));
+            return GetOutputValue<T>(FindValueOutput(outputName));
         }
 
-        public object GetOutputValue(GraphValueOutputPort graphOutput)
+        public T GetOutputValue<T>(GraphValueOutputPort graphOutput)
         {
-            if (graphOutput == null) return null;
-            return graphOutput.GetValue();
+            if (graphOutput == null) return default;
+            return graphOutput.GetValue<T>();
         }
 
         public bool SetOutputValue(string outputName, object value)
@@ -138,7 +138,7 @@ namespace Graph.Logic
         public static GraphBlock CreateBlock(Type blockType, Vector2 position, string displayName)
         {
             GraphBlock graphBlock = CreateBlock(blockType);
-            if(graphBlock != null)
+            if (graphBlock != null)
             {
                 graphBlock._position = position;
                 graphBlock.DisplayName = displayName;
@@ -165,7 +165,7 @@ namespace Graph.Logic
         public class GraphOutputPort : GraphPort
         {
             // SerializeReference: store a LINK to the real block in GraphAsset._blocks (not a private copy)
-            [SerializeReference, HideInInspector] private List<GraphBlock> _connectedBlocks = new List<GraphBlock>(); 
+            [SerializeReference, HideInInspector] private List<GraphBlock> _connectedBlocks = new List<GraphBlock>();
             public IReadOnlyList<GraphBlock> ConnectedBlocks => _connectedBlocks;
 
             public void ConnectBlock(GraphBlock graphBlock)
@@ -182,7 +182,7 @@ namespace Graph.Logic
 
             public void Fire()
             {
-                foreach(var connectedBlock in ConnectedBlocks)
+                foreach (var connectedBlock in ConnectedBlocks)
                 {
                     if (connectedBlock != null)
                         connectedBlock.StartBlock();
@@ -239,7 +239,7 @@ namespace Graph.Logic
             public GraphValueInputPort() : base(string.Empty) { }
         }
 
-        [Serializable] 
+        [Serializable]
         public class GraphValueOutputPort : GraphPort
         {
             [SerializeField, HideInInspector] private string _typeName;
@@ -252,9 +252,10 @@ namespace Graph.Logic
             // Runtime-only value (not serialized)
             public object Value { get; private set; }
 
-            public object GetValue()
+            public T GetValue<T>()
             {
-                return Value;
+                if (!(Value is T)) return default;
+                return (T)Value;
             }
 
             public bool SetValue(object value)
