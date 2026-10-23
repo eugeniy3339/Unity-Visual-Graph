@@ -7,12 +7,15 @@ To create new Block in the graph right click the graph's background, select Crea
 Block Script:
 Block class must have Serializable Attribute on it, for it to save.
 To configure block's "Group", "Name" when creating it in the graph add BlockMenu Attribute on it.
+
 F.E.
+```csharp
 [Serializable]
 [BlockMenu("Custom/TestBlock")]
 public class TestBlock : GraphBlock {
 
 }
+```
 
 public:
 DisplayName
@@ -23,24 +26,91 @@ HasInputPort stores if block have input port. HasInputPort can be overrided.
 
 Ports
 Read only list of GraphOutputPort. Ports can be overrided. The variable Ports returns should have SerializeReference/SerializeField on it, so the Ports can be saved.
+
 F.E
+```csharp
 [SerializeReference, HideInInspector] protected GraphOutputPort[] _ports = { new GraphOutputPort("Out") }; 
 public virtual IReadOnlyList<GraphOutputPort> Ports => _ports;
+```
 
 ValueOutputs
 Read only list of GraphValueOutputPort. ValueOutputs can be overrided. The variable ValueOutputs returns should have SerializeReference/SerializeField on it, so the ValueOutputs can be saved.
+
 F.E
+```csharp
 [SerializeReference, HideInInspector] protected GraphValueOutputPort[] _valueOutputs = { };
 public virtual IReadOnlyList<GraphValueOutputPort> ValueOutputs => _valueOutputs;
+```
 
 ValueInputs
 Read only list of GraphValueInputPort. ValueInputs can be overrided. The variable ValueInputs returns should have SerializeReference/SerializeField on it, so the ValueInputs can be saved.
+
 F.E
+```csharp
 [SerializeReference, HideInInspector] protected GraphValueInputPort[] _valueInputs = { }; 
 public virtual IReadOnlyList<GraphValueInputPort> ValueInputs => _valueInputs;
+```
 
 StartBlock
 Start Block is being called by GraphAsset on the first graph's block when StartGraph function is being called, or from other blocks, when theirs Fire function with port, that is connected to the block is being called. Start Block can be overrided (default calls Fire(0)).
 
 GetInputValue
-GetInputValue takes port name of the port it self and returns value of the input port.
+GetInputValue takes port name or the port it self and returns value of the input port.
+
+F.E
+```csharp
+[SerializeReference, HideInInspector] private GraphValueInputPort[] _inputPorts = { new GraphValueInputPort("TestInput", typeof(string)) };
+public override IReadOnlyList<GraphValueInputPort> ValueInputs => _inputPorts;
+
+public override void StartBlock()
+{
+    string value = GetInputValue<string>("TestOutput");
+}
+```
+
+GetOutputValue
+GetOutputValue takes port name or the port it self and returns value of the output port.
+
+F.E
+```csharp
+[SerializeReference, HideInInspector] private GraphValueOutputPort[] _ouputPorts = { new GraphValueOutputPort("TestOutput", typeof(string)) };
+public override IReadOnlyList<GraphValueOutputPort> ValueOutputs => _ouputPorts;
+
+public override void StartBlock()
+{
+    string value = GetOutputValue<string>("TestOutput");
+}
+```
+
+SetOutputValue
+SetOutputValue takes port name or the port it self and value you want to set and sets value of the output port.
+
+F.E
+```csharp
+[SerializeReference, HideInInspector] private GraphValueOutputPort[] _ouputPorts = { new GraphValueOutputPort("TestOutput", typeof(string)) };
+public override IReadOnlyList<GraphValueOutputPort> ValueOutputs => _ouputPorts;
+
+public override void StartBlock()
+{
+    SetOutputValue("TestOutput", "Test");
+}
+```
+
+Fire
+Fire function takes port's index or the port it self and calls StartBlock functions of the connected blocks.
+
+F.E
+```csharp
+public override void StartBlock()
+{
+    Fire(0); //Starts blocks, that are connected to the port with index 0
+}
+```
+
+CreateBlock
+CreateBlock is a static function, that creates a block of the Type.
+
+F.E
+```csharp
+GraphBlock.CreateBlock<GraphBlock>("New Block");
+```
