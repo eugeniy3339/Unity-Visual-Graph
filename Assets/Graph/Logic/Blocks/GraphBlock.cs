@@ -125,27 +125,27 @@ namespace Graph.Logic
             return graphBlock;
         }
 
-        public static GraphBlock CreateBlock(Type blockType, string displayName)
+        public static T CreateBlock<T>(string displayName) where T : GraphBlock
         {
-            GraphBlock graphBlock = CreateBlock(blockType);
+            GraphBlock graphBlock = CreateBlock(typeof(T));
             if (graphBlock != null)
             {
                 graphBlock.DisplayName = displayName;
             }
 
-            return graphBlock;
+            return (T)graphBlock;
         }
 
-        public static GraphBlock CreateBlock(Type blockType, Vector2 position, string displayName)
+        public static T CreateBlock<T>(Vector2 position, string displayName) where T : GraphBlock
         {
-            GraphBlock graphBlock = CreateBlock(blockType);
+            GraphBlock graphBlock = CreateBlock(typeof(T));
             if (graphBlock != null)
             {
                 graphBlock._position = position;
                 graphBlock.DisplayName = displayName;
             }
 
-            return graphBlock;
+            return (T)graphBlock;
         }
 
 
