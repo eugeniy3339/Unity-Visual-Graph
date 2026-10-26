@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using System;
 
 namespace Graph.Logic
 {
+    [Serializable]
     [BlockMenu("Custom/#SCRIPTNAME#")]
     public class #SCRIPTNAME# : GraphBlock
     {
