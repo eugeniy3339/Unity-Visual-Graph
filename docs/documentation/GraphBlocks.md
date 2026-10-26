@@ -197,4 +197,4 @@ public override void StartBlock()
 
 ![Blocks start queue](images/BlocksStartQueue.png)
 
-*Blocks are started in the order shown above: the entry block fires three chains, each one is followed to its end before the next one starts.*
+*Blocks are started in the order shown above: the entry block fires chains, each one is followed to its end before the next one starts.*
